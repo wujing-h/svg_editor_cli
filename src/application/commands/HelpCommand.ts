@@ -21,6 +21,8 @@ export class HelpCommand implements Command {
         { syntax: "canvas [w] [h]", description: "show or resize the current canvas" },
         { syntax: "create <type> <id> [params...] [in <containerId>]", description: "create rect/circle/ellipse/line/text/g" },
         { syntax: "move <id> <dx> <dy>", description: "move a shape or all descendants of a group" },
+        { syntax: "scale <id> <factor>", description: "scale all geometry by a positive factor" },
+        { syntax: "delete <id>", description: "delete a shape and all its descendants" },
         { syntax: "undo", description: "undo the last edit" },
         { syntax: "redo", description: "redo the last undone edit" },
         { syntax: "help", description: "show available commands" },

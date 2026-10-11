@@ -66,3 +66,30 @@ test("CLI creates, moves, and restores shapes sequentially with the required his
     "error: undo not allowed after io command",
   ]);
 });
+
+test("CLI scales and deletes shapes with reversible summaries and errors", () => {
+  const result = spawnSync(process.execPath, [path.join(__dirname, "../dist/main.js")], {
+    input: "init\ncreate g scene\ncreate circle c1 1 2 3 in scene\nscale scene 2\nundo\nredo\ndelete c1\nundo\nredo\nundo\nscale c1 0\ndelete missing\ndelete scene\nundo\n",
+    encoding: "utf8",
+    timeout: 5000,
+  });
+  assert.equal(result.error, undefined);
+  assert.equal(result.status, 0);
+  assert.equal(result.stderr, "");
+  assert.deepEqual(result.stdout.trim().split(/\r?\n/).slice(1), [
+    "canvas 800x600 created",
+    "g#scene created",
+    "circle#c1 created in g#scene",
+    "g#scene scaled by 2",
+    "g#scene scale undone",
+    "g#scene scaled by 2",
+    "circle#c1 deleted",
+    "circle#c1 restored into g#scene",
+    "circle#c1 deleted",
+    "circle#c1 restored into g#scene",
+    "error: scale factor must be positive",
+    "error: no such shape: missing",
+    "g#scene deleted",
+    "g#scene restored into svg",
+  ]);
+});
