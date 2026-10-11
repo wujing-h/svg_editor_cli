@@ -16,7 +16,11 @@ export class HelpCommand implements Command {
     }
 
     return {
-      help: [{ syntax: "help", description: "show available commands" }],
+      help: [
+        { syntax: "init [w] [h]", description: "create a canvas (default 800x600)" },
+        { syntax: "canvas [w] [h]", description: "show or resize the current canvas" },
+        { syntax: "help", description: "show available commands" },
+      ],
     };
   }
 }

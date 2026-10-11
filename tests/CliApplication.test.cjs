@@ -19,3 +19,24 @@ test("CLI handles comments, errors, help, and EOF sequentially", () => {
   assert.match(result.stdout, /help\s+show available commands/);
   assert.doesNotMatch(result.stdout, /svg> /);
 });
+
+test("CLI creates, resizes, and queries a canvas sequentially after errors", () => {
+  const result = spawnSync(process.execPath, [path.join(__dirname, "../dist/main.js")], {
+    input: "canvas\ninit\ncanvas 640 480\ncanvas 999 -1\ncanvas\ninit 0 100\ncanvas\n",
+    encoding: "utf8",
+    timeout: 5000,
+  });
+
+  assert.equal(result.error, undefined);
+  assert.equal(result.status, 0);
+  assert.equal(result.stderr, "");
+  assert.deepEqual(result.stdout.trim().split(/\r?\n/).slice(1), [
+    "error: no document. use 'init' or 'read' first",
+    "canvas 800x600 created",
+    "canvas resized to 640x480",
+    "error: canvas dimensions must be finite and positive",
+    "canvas 640x480",
+    "error: canvas dimensions must be finite and positive",
+    "canvas 640x480",
+  ]);
+});

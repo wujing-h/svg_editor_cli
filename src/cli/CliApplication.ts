@@ -32,11 +32,12 @@ export class CliApplication {
     }
 
     try {
-      // 逐条 await，避免以后异步 read/save 与后续编辑命令交错。
+      // 逐条 await 取得命令，避免以后异步 read/save 与后续编辑命令交错。
       for await (const line of terminal) {
         try {
           const input = this.parser.parse(line);
           if (input !== undefined) {
+            // 等待命令执行结果，避免后续命令与前序命令交错。
             const result = await this.dispatcher.dispatch(input);
             for (const output of this.formatter.format(result)) {
               stdout.write(`${output}\n`);
