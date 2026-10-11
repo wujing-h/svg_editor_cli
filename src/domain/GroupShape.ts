@@ -2,14 +2,15 @@
 import { GeometrySnapshot } from "./GeometrySnapshot.js";
 import { Shape } from "./Shape.js";
 import type { ShapeDescription } from "./ShapeDescription.js";
+import type { ShapeStyles } from "./ShapeStyles.js";
 import { treeMutationToken } from "./internal/TreeMutationToken.js";
 
 export class GroupShape extends Shape {
   override readonly kind = "g";
   private childShapes: Shape[] = [];
 
-  constructor(id: string) {
-    super(id);
+  constructor(id: string, styles: ShapeStyles = {}) {
+    super(id, styles);
   }
 
   override get children(): readonly Shape[] {
@@ -51,7 +52,7 @@ export class GroupShape extends Shape {
 
   override describe(): ShapeDescription {
     return {
-      id: this.id, kind: this.kind, attributes: {},
+      id: this.id, kind: this.kind, attributes: this.describeStyles(),
       children: this.childShapes.map((child) => child.describe()),
     };
   }

@@ -5,6 +5,7 @@ const { SvgDocument } = require("../dist/domain/SvgDocument.js");
 const { GroupShape } = require("../dist/domain/GroupShape.js");
 const { RectShape } = require("../dist/domain/RectShape.js");
 const { GeometrySnapshot } = require("../dist/domain/GeometrySnapshot.js");
+const { ShapeFactory } = require("../dist/domain/ShapeFactory.js");
 
 test("nested groups delegate movement, scaling, and exact restoration through Shape operations", () => {
   const document = new SvgDocument(800, 600);
@@ -103,4 +104,37 @@ test("geometry restoration rejects changed membership, order, and same-id replac
   const replacement = group.describe();
   assert.throws(() => group.restoreGeometry(snapshot), /another shape/);
   assert.deepEqual(group.describe(), replacement);
+});
+
+test("mixed groups preserve leaf styles and text while recursively moving, scaling, and restoring", () => {
+  const document = new SvgDocument(800, 600);
+  const factory = new ShapeFactory();
+  const group = factory.create("g", "scene", { fill: "red" });
+  document.insert(group);
+  document.insert(factory.create("g", "nested"), "scene");
+  const leaves = [
+    factory.createFromParameters("circle", "c1", ["1", "2", "3", "blue"]),
+    factory.createFromParameters("ellipse", "e1", ["1", "2", "3", "4"]),
+    factory.createFromParameters("line", "l1", ["1", "2", "3", "4", "black"]),
+    factory.createFromParameters("text", "t1", ["1", "2", "  内容 <&>  "]),
+  ];
+  for (const leaf of leaves) document.insert(leaf, "nested");
+  const before = group.describe();
+  const snapshot = group.captureGeometry();
+  group.move(5, -5);
+  group.scale(2);
+  assert.deepEqual(leaves.map((leaf) => leaf.describe().attributes), [
+    { cx: 12, cy: -6, r: 6, fill: "blue" },
+    { cx: 12, cy: -6, rx: 6, ry: 8 },
+    { x1: 12, y1: -6, x2: 16, y2: -2, stroke: "black" },
+    { x: 12, y: -6 },
+  ]);
+  assert.equal(leaves[3].describe().text, "  内容 <&>  ");
+  group.restoreGeometry(snapshot);
+  assert.deepEqual(group.describe(), before);
+
+  document.insert(factory.create("circle", "large", { cx: 1, cy: Number.MAX_VALUE, r: 1 }), "nested");
+  const original = group.describe();
+  assert.throws(() => group.move(5, Number.MAX_VALUE), /finite/);
+  assert.deepEqual(group.describe(), original);
 });

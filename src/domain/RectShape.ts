@@ -2,6 +2,7 @@
 import { GeometrySnapshot } from "./GeometrySnapshot.js";
 import { Shape } from "./Shape.js";
 import type { ShapeDescription } from "./ShapeDescription.js";
+import type { ShapeStyles } from "./ShapeStyles.js";
 
 export class RectShape extends Shape {
   override readonly kind = "rect";
@@ -10,8 +11,8 @@ export class RectShape extends Shape {
   private width: number;
   private height: number;
 
-  constructor(id: string, x: number, y: number, width: number, height: number) {
-    super(id);
+  constructor(id: string, x: number, y: number, width: number, height: number, styles: ShapeStyles = {}) {
+    super(id, styles);
     RectShape.validateGeometry(x, y, width, height);
     this.x = x;
     this.y = y;
@@ -39,7 +40,10 @@ export class RectShape extends Shape {
     return {
       id: this.id,
       kind: this.kind,
-      attributes: { x: this.x, y: this.y, width: this.width, height: this.height },
+      attributes: {
+        x: this.x, y: this.y, width: this.width, height: this.height,
+        ...this.describeStyles(),
+      },
     };
   }
 

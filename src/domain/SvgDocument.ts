@@ -9,6 +9,7 @@ export class SvgDocument {
   private width: number;
   private height: number;
   private rootShapes: Shape[] = [];
+  // MAP 维护 id 唯一性
   private readonly shapesById = new Map<string, Shape>();
 
   constructor(width: number, height: number) {
@@ -90,9 +91,11 @@ export class SvgDocument {
     this.insertSubtree(location.shape, parent, location.index);
   }
 
+  // 插入子树
   private insertSubtree(shape: Shape, parent: GroupShape | undefined, index?: number): void {
     const siblings = parent === undefined ? this.rootShapes : [...parent.children];
     const position = index ?? siblings.length;
+    // 检查插入位置合法性，避免越界或负数。
     if (!Number.isInteger(position) || position < 0 || position > siblings.length) {
       throw new Error("invalid child position");
     }
@@ -115,6 +118,7 @@ export class SvgDocument {
     updated.splice(position, 0, shape);
     this.replaceSiblings(parent, updated);
     for (const node of nodes) {
+      // 内部父子关系保留，外部父引用更新为新父对象或 undefined。
       node.setTreeContext(treeMutationToken, node === shape ? parent : node.parent, this);
       this.shapesById.set(node.id, node);
     }
