@@ -49,6 +49,25 @@ export class RectShape extends Shape {
     });
   }
 
+  override validateMoveResult(dx: number, dy: number): void {
+    this.validateMove(dx, dy);
+    RectShape.validateGeometry(this.x + dx, this.y + dy, this.width, this.height);
+  }
+
+  override validateScaleResult(factor: number): void {
+    this.validateScale(factor);
+    RectShape.validateGeometry(
+      this.x * factor, this.y * factor, this.width * factor, this.height * factor,
+    );
+  }
+
+  override validateGeometryRestore(snapshot: GeometrySnapshot): void {
+    RectShape.validateGeometry(
+      snapshot.getValue(this, "x"), snapshot.getValue(this, "y"),
+      snapshot.getValue(this, "width"), snapshot.getValue(this, "height"),
+    );
+  }
+
   override restoreGeometry(snapshot: GeometrySnapshot): void {
     const x = snapshot.getValue(this, "x");
     const y = snapshot.getValue(this, "y");

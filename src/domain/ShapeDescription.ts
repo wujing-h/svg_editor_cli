@@ -3,4 +3,5 @@ export interface ShapeDescription {
   readonly id: string;
   readonly kind: string;
   readonly attributes: Readonly<Record<string, string | number>>;
+  readonly children?: readonly ShapeDescription[];
 }

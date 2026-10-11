@@ -1,9 +1,14 @@
 // 用途：定义图形的身份、统一几何操作与局部恢复契约。
 import type { GeometrySnapshot } from "./GeometrySnapshot.js";
 import type { ShapeDescription } from "./ShapeDescription.js";
+import type { GroupShape } from "./GroupShape.js";
+import type { SvgDocument } from "./SvgDocument.js";
+import { treeMutationToken } from "./internal/TreeMutationToken.js";
 
 export abstract class Shape {
   private readonly identifier: string;
+  private parentShape: GroupShape | undefined;
+  private ownerDocument: SvgDocument | undefined;
   abstract readonly kind: string;
 
   protected constructor(id: string) {
@@ -17,11 +22,44 @@ export abstract class Shape {
     return this.identifier;
   }
 
+  get parent(): GroupShape | undefined {
+    return this.parentShape;
+  }
+
+  get document(): SvgDocument | undefined {
+    return this.ownerDocument;
+  }
+
+  get children(): readonly Shape[] {
+    return [];
+  }
+
+  isContainer(): this is GroupShape {
+    return false;
+  }
+
   abstract move(dx: number, dy: number): void;
   abstract scale(factor: number): void;
   abstract describe(): ShapeDescription;
   abstract captureGeometry(): GeometrySnapshot;
   abstract restoreGeometry(snapshot: GeometrySnapshot): void;
+  // 容器先通过这些方法检查全部子孙，再开始写入几何状态。
+  abstract validateMoveResult(dx: number, dy: number): void;
+  abstract validateScaleResult(factor: number): void;
+  abstract validateGeometryRestore(snapshot: GeometrySnapshot): void;
+
+  /** @internal 只供 SvgDocument 在完整结构校验后更新归属。 */
+  setTreeContext(
+    token: typeof treeMutationToken,
+    parent: GroupShape | undefined,
+    document: SvgDocument | undefined,
+  ): void {
+    if (token !== treeMutationToken) {
+      throw new Error("tree structure must be changed through SvgDocument");
+    }
+    this.parentShape = parent;
+    this.ownerDocument = document;
+  }
 
   protected validateMove(dx: number, dy: number): void {
     if (!Number.isFinite(dx) || !Number.isFinite(dy)) {
