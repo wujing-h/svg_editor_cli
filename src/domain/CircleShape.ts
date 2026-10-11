@@ -33,6 +33,7 @@ export class CircleShape extends Shape {
     return {
       id: this.id, kind: this.kind,
       position: { x: this.cx, y: this.cy },
+      geometry: { cx: this.cx, cy: this.cy, r: this.r },
       attributes: { cx: this.cx, cy: this.cy, r: this.r, ...this.describeStyles() },
     };
   }

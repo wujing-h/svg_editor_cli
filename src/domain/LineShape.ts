@@ -35,6 +35,8 @@ export class LineShape extends Shape {
     return {
       id: this.id, kind: this.kind,
       position: { x: this.x1, y: this.y1 },
+      endPosition: { x: this.x2, y: this.y2 },
+      geometry: { x1: this.x1, y1: this.y1, x2: this.x2, y2: this.y2 },
       attributes: { x1: this.x1, y1: this.y1, x2: this.x2, y2: this.y2, ...this.describeStyles() },
     };
   }

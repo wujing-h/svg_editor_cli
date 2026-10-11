@@ -41,6 +41,7 @@ export class RectShape extends Shape {
       id: this.id,
       kind: this.kind,
       position: { x: this.x, y: this.y },
+      geometry: { x: this.x, y: this.y, width: this.width, height: this.height },
       attributes: {
         x: this.x, y: this.y, width: this.width, height: this.height,
         ...this.describeStyles(),

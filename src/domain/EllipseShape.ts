@@ -34,6 +34,7 @@ export class EllipseShape extends Shape {
     return {
       id: this.id, kind: this.kind,
       position: { x: this.cx, y: this.cy },
+      geometry: { cx: this.cx, cy: this.cy, rx: this.rx, ry: this.ry },
       attributes: { cx: this.cx, cy: this.cy, rx: this.rx, ry: this.ry, ...this.describeStyles() },
     };
   }

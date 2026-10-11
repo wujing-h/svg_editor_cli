@@ -5,10 +5,11 @@ import { EditorSession } from "./application/EditorSession.js";
 import { CliApplication } from "./cli/CliApplication.js";
 import { CliFormatter } from "./cli/CliFormatter.js";
 import { CommandLineParser } from "./cli/CommandLineParser.js";
+import { SvgFileStore } from "./infrastructure/SvgFileStore.js";
 
 const formatter = new CliFormatter();
 const application = new CliApplication(
-  new CommandDispatcher(new EditorSession()),
+  new CommandDispatcher(new EditorSession(new SvgFileStore())),
   new CommandLineParser(),
   formatter,
 );

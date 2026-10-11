@@ -19,6 +19,7 @@ export class HelpCommand implements Command {
       help: [
         { syntax: "init [w] [h]", description: "create a canvas (default 800x600)" },
         { syntax: "canvas [w] [h]", description: "show or resize the current canvas" },
+        { syntax: "save [file.svg]", description: "save to a given or previously associated path" },
         { syntax: "create <type> <id> [params...] [in <containerId>]", description: "create rect/circle/ellipse/line/text/g" },
         { syntax: "move <id> <dx> <dy>", description: "move a shape or all descendants of a group" },
         { syntax: "scale <id> <factor>", description: "scale all geometry by a positive factor" },
@@ -29,6 +30,8 @@ export class HelpCommand implements Command {
         { syntax: "back <id>", description: "send a shape to the back among its siblings" },
         { syntax: "group <newGid> <id1> [id2...]", description: "group existing shapes in their original tree order" },
         { syntax: "ungroup <gid>", description: "replace a non-top-level group with its children" },
+        { syntax: "tree [id]", description: "show the document tree or a selected subtree" },
+        { syntax: "show <id>", description: "show a shape's attributes and parent" },
         { syntax: "undo", description: "undo the last edit" },
         { syntax: "redo", description: "redo the last undone edit" },
         { syntax: "help", description: "show available commands" },
