@@ -1,13 +1,16 @@
 {
   "name": "pj",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "CLI SVG editor for the software design course",
+  "main": "dist/main.js",
   "directories": {
     "doc": "doc"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "check": "tsc --noEmit",
+    "build": "tsc",
+    "cli": "npm run build && node dist/main.js",
+    "test": "npm run build && node --test"
   },
   "keywords": [],
   "author": "",
