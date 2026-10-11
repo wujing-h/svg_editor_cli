@@ -32,6 +32,7 @@ export class TextShape extends Shape {
     // 内容属于子文本，保留原值；XML 转义由未来的 SvgWriter 负责。
     return {
       id: this.id, kind: this.kind,
+      position: { x: this.x, y: this.y },
       attributes: { x: this.x, y: this.y, ...this.describeStyles() },
       text: this.content,
     };

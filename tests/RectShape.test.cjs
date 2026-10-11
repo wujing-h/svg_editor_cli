@@ -10,6 +10,7 @@ test("rectangles move their position and scale both position and size", () => {
   shape.move(30, 5);
   assert.deepEqual(shape.describe(), {
     id: "r1", kind: "rect", attributes: { x: 40, y: -15, width: 100, height: 50 },
+    position: { x: 40, y: -15 },
   });
   shape.scale(0.5);
   assert.deepEqual(shape.describe().attributes, { x: 20, y: -7.5, width: 50, height: 25 });

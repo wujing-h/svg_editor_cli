@@ -14,6 +14,14 @@ export class CommandArguments {
     }
   }
 
+  stringAt(index: number): string {
+    const token = this.tokens[index];
+    if (token === undefined) {
+      throw new Error(`missing argument: ${index + 1}`);
+    }
+    return token.value;
+  }
+
   numberAt(index: number, fallback: number): number {
     const token = this.tokens[index];
     if (token === undefined) {

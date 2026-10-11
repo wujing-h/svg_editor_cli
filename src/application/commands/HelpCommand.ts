@@ -19,6 +19,10 @@ export class HelpCommand implements Command {
       help: [
         { syntax: "init [w] [h]", description: "create a canvas (default 800x600)" },
         { syntax: "canvas [w] [h]", description: "show or resize the current canvas" },
+        { syntax: "create <type> <id> [params...] [in <containerId>]", description: "create rect/circle/ellipse/line/text/g" },
+        { syntax: "move <id> <dx> <dy>", description: "move a shape or all descendants of a group" },
+        { syntax: "undo", description: "undo the last edit" },
+        { syntax: "redo", description: "redo the last undone edit" },
         { syntax: "help", description: "show available commands" },
       ],
     };

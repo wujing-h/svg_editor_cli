@@ -34,6 +34,7 @@ export class LineShape extends Shape {
   override describe(): ShapeDescription {
     return {
       id: this.id, kind: this.kind,
+      position: { x: this.x1, y: this.y1 },
       attributes: { x1: this.x1, y1: this.y1, x2: this.x2, y2: this.y2, ...this.describeStyles() },
     };
   }

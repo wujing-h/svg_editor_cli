@@ -40,6 +40,7 @@ export class RectShape extends Shape {
     return {
       id: this.id,
       kind: this.kind,
+      position: { x: this.x, y: this.y },
       attributes: {
         x: this.x, y: this.y, width: this.width, height: this.height,
         ...this.describeStyles(),

@@ -32,6 +32,7 @@ export class CircleShape extends Shape {
   override describe(): ShapeDescription {
     return {
       id: this.id, kind: this.kind,
+      position: { x: this.cx, y: this.cy },
       attributes: { cx: this.cx, cy: this.cy, r: this.r, ...this.describeStyles() },
     };
   }

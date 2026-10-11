@@ -33,6 +33,7 @@ export class EllipseShape extends Shape {
   override describe(): ShapeDescription {
     return {
       id: this.id, kind: this.kind,
+      position: { x: this.cx, y: this.cy },
       attributes: { cx: this.cx, cy: this.cy, rx: this.rx, ry: this.ry, ...this.describeStyles() },
     };
   }
