@@ -117,3 +117,27 @@ test("CLI sets text, styles, and geometry with exact undo feedback after errors"
     "text#title updated: x=0",
   ]);
 });
+
+test("CLI moves shapes between containers and layers with reversible feedback", () => {
+  const result = spawnSync(process.execPath, [path.join(__dirname, "../dist/main.js")], {
+    input: "init\ncreate g scene\ncreate circle c1 1 2 3\naddto scene c1\nundo\nredo\nfront c1\nback c1\nundo\naddto scene scene\nundo\n",
+    encoding: "utf8",
+    timeout: 5000,
+  });
+  assert.equal(result.error, undefined);
+  assert.equal(result.status, 0);
+  assert.equal(result.stderr, "");
+  assert.deepEqual(result.stdout.trim().split(/\r?\n/).slice(1), [
+    "canvas 800x600 created",
+    "g#scene created",
+    "circle#c1 created",
+    "circle#c1 moved into g#scene",
+    "circle#c1 restored to position 2 in svg",
+    "circle#c1 moved into g#scene",
+    "circle#c1 moved to front",
+    "circle#c1 moved to back",
+    "circle#c1 restored to position 1 in g#scene",
+    "error: cannot move a shape into itself or its descendant: scene",
+    "circle#c1 restored to position 1 in g#scene",
+  ]);
+});

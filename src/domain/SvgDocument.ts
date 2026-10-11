@@ -2,6 +2,7 @@
 import type { CanvasSize } from "./CanvasSize.js";
 import type { GroupShape } from "./GroupShape.js";
 import type { Shape } from "./Shape.js";
+import type { PlacementChange } from "./PlacementChange.js";
 import type { SubtreeLocation } from "./SubtreeLocation.js";
 import { treeMutationToken } from "./internal/TreeMutationToken.js";
 
@@ -89,6 +90,83 @@ export class SvgDocument {
       throw new Error(`original container is not in this document: ${parent.id}`);
     }
     this.insertSubtree(location.shape, parent, location.index);
+  }
+
+  addTo(containerId: string, id: string): PlacementChange {
+    const parent = this.findContainer(containerId);
+    return this.relocate(this.findShape(id), parent);
+  }
+
+  bringToFront(id: string): PlacementChange {
+    const shape = this.findShape(id);
+    // SVG 后出现的同级节点绘制在上方，front 因而是列表末尾。
+    return this.relocate(shape, shape.parent);
+  }
+
+  sendToBack(id: string): PlacementChange {
+    const shape = this.findShape(id);
+    return this.relocate(shape, shape.parent, 0);
+  }
+
+  restorePlacement(location: SubtreeLocation): void {
+    if (location.document !== this) {
+      throw new Error("subtree location belongs to another document");
+    }
+    // 活动对象换位与已删除子树接回使用不同入口，不能互相代替。
+    this.relocate(location.shape, location.parent, location.index);
+  }
+
+  private relocate(shape: Shape, parent: GroupShape | undefined, index?: number): PlacementChange {
+    if (this.shapesById.get(shape.id) !== shape || shape.document !== this) {
+      throw new Error(`original shape is not in this document: ${shape.id}`);
+    }
+    if (parent !== undefined && (this.shapesById.get(parent.id) !== parent || parent.document !== this)) {
+      throw new Error(`original container is not in this document: ${parent.id}`);
+    }
+    if (parent !== undefined) {
+      const parentId = parent.id;
+      if (!parent.isContainer()) {
+        throw new Error(`not a container: ${parentId}`);
+      }
+    }
+    // 沿目标父容器的祖先链检查，既拒绝移入自身，也拒绝移入自己的子孙。
+    for (let ancestor = parent; ancestor !== undefined; ancestor = ancestor.parent) {
+      if (ancestor === shape) {
+        throw new Error(`cannot move a shape into itself or its descendant: ${shape.id}`);
+      }
+    }
+
+    const oldParent = shape.parent;
+    const oldSiblings = this.siblingsOf(oldParent);
+    const oldIndex = oldSiblings.indexOf(shape);
+    if (oldIndex < 0) {
+      throw new Error("inconsistent shape tree");
+    }
+    const remaining = oldSiblings.filter((sibling) => sibling !== shape);
+    // 同父换位必须先排除自身；index 表示换位完成后的索引。
+    const targetSiblings = parent === oldParent ? remaining : this.siblingsOf(parent);
+    const position = index ?? targetSiblings.length;
+    if (!Number.isInteger(position) || position < 0 || position > targetSiblings.length) {
+      throw new Error("invalid child position");
+    }
+    const updated = [...targetSiblings];
+    updated.splice(position, 0, shape);
+    const change: PlacementChange = {
+      before: { document: this, shape, parent: oldParent, index: oldIndex },
+      after: { document: this, shape, parent, index: position },
+    };
+
+    // 所有校验和列表计算完成后才写入；子孙归属、几何和 id 索引保持原样。
+    if (parent !== oldParent) {
+      this.replaceSiblings(oldParent, remaining);
+    }
+    this.replaceSiblings(parent, updated);
+    shape.setTreeContext(treeMutationToken, parent, this);
+    return change;
+  }
+
+  private siblingsOf(parent: GroupShape | undefined): readonly Shape[] {
+    return parent === undefined ? [...this.rootShapes] : parent.children;
   }
 
   // 插入子树

@@ -1,4 +1,4 @@
-// 用途：记录移除子树的原文档、父容器与位置，供局部结构恢复使用。
+// 用途：记录子树的文档、对象、父容器与位置，供删除或换位的局部恢复使用。
 import type { GroupShape } from "./GroupShape.js";
 import type { Shape } from "./Shape.js";
 import type { SvgDocument } from "./SvgDocument.js";
