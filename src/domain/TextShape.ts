@@ -8,7 +8,7 @@ export class TextShape extends Shape {
   override readonly kind = "text";
   private x: number;
   private y: number;
-  private readonly content: string;
+  private content: string;
 
   constructor(id: string, x: number, y: number, content: string, styles: ShapeStyles = {}) {
     super(id, styles);
@@ -70,5 +70,25 @@ export class TextShape extends Shape {
     if (![x, y].every(Number.isFinite)) {
       throw new Error("geometry values must be finite");
     }
+  }
+
+  protected override getOwnAttribute(attribute: string): string | number {
+    if (attribute === "text") {
+      return this.content;
+    }
+    return this.geometryAttribute(attribute, { x: this.x, y: this.y });
+  }
+
+  protected override setOwnAttribute(attribute: string, raw: string | number): void {
+    if (attribute === "text") {
+      if (typeof raw !== "string") {
+        throw new Error("text content must be a string");
+      }
+      this.content = raw;
+      return;
+    }
+    this.getOwnAttribute(attribute);
+    const value = this.numberAttribute(raw);
+    this.updateGeometry(attribute === "x" ? value : this.x, attribute === "y" ? value : this.y);
   }
 }

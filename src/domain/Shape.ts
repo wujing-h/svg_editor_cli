@@ -1,4 +1,5 @@
-// 用途：定义图形的身份、统一几何操作与局部恢复契约。
+// 用途：封装图形身份与公共样式，定义统一几何、属性修改及局部恢复契约。
+import { AttributeSnapshot } from "./AttributeSnapshot.js";
 import type { GeometrySnapshot } from "./GeometrySnapshot.js";
 import type { ShapeDescription } from "./ShapeDescription.js";
 import type { GroupShape } from "./GroupShape.js";
@@ -10,9 +11,9 @@ export abstract class Shape {
   private readonly identifier: string;
   private parentShape: GroupShape | undefined;
   private ownerDocument: SvgDocument | undefined;
-  private readonly fillValue: string | undefined;
-  private readonly strokeValue: string | undefined;
-  private readonly strokeWidthValue: number | undefined;
+  private fillValue: string | undefined;
+  private strokeValue: string | undefined;
+  private strokeWidthValue: number | undefined;
   abstract readonly kind: string;
 
   protected constructor(id: string, styles: ShapeStyles = {}) {
@@ -57,6 +58,88 @@ export abstract class Shape {
   abstract validateMoveResult(dx: number, dy: number): void;
   abstract validateScaleResult(factor: number): void;
   abstract validateGeometryRestore(snapshot: GeometrySnapshot): void;
+
+  setAttribute(attribute: string, value: string | number): void {
+    // 公共样式只修改当前对象；容器通过 SVG 继承影响外观，不覆盖子节点。
+    if (attribute === "fill" || attribute === "stroke") {
+      if (typeof value !== "string") {
+        throw new Error(`invalid paint value: ${attribute}`);
+      }
+      if (attribute === "fill") {
+        this.fillValue = value;
+      } else {
+        this.strokeValue = value;
+      }
+    } else if (attribute === "stroke-width") {
+      const width = this.numberAttribute(value);
+      if (width < 0) {
+        throw new Error("stroke width must be finite and non-negative");
+      }
+      this.strokeWidthValue = width;
+    } else {
+      this.setOwnAttribute(attribute, value);
+    }
+  }
+
+  captureAttribute(attribute: string): AttributeSnapshot {
+    let value: string | number | undefined;
+    if (attribute === "fill") {
+      value = this.fillValue;
+    } else if (attribute === "stroke") {
+      value = this.strokeValue;
+    } else if (attribute === "stroke-width") {
+      value = this.strokeWidthValue;
+    } else {
+      value = this.getOwnAttribute(attribute);
+    }
+    return new AttributeSnapshot(this, attribute, value);
+  }
+
+  restoreAttribute(snapshot: AttributeSnapshot): void {
+    const value = snapshot.getValue(this);
+    const attribute = snapshot.attribute;
+    if (value !== undefined) {
+      // 原值与新值都经过对象自身的白名单和范围校验。
+      this.setAttribute(attribute, value);
+    } else if (attribute === "fill") {
+      this.fillValue = undefined;
+    } else if (attribute === "stroke") {
+      this.strokeValue = undefined;
+    } else if (attribute === "stroke-width") {
+      this.strokeWidthValue = undefined;
+    } else {
+      throw new Error(`cannot remove required attribute: ${attribute}`);
+    }
+  }
+
+  protected getOwnAttribute(attribute: string): string | number {
+    throw new Error(`unknown attribute: ${attribute}`);
+  }
+
+  protected setOwnAttribute(attribute: string, _value: string | number): void {
+    throw new Error(`unknown attribute: ${attribute}`);
+  }
+
+  protected geometryAttribute(attribute: string, values: Readonly<Record<string, number>>): number {
+    const value = values[attribute];
+    // 按本对象明确列出的几何字段校验，也拒绝原型链上的属性名。
+    if (!Object.hasOwn(values, attribute) || typeof value !== "number") {
+      throw new Error(`unknown attribute: ${attribute}`);
+    }
+    return value;
+  }
+
+  protected numberAttribute(raw: string | number): number {
+    const decimal = /^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?$/;
+    if (typeof raw !== "number" && typeof raw !== "string") {
+      throw new Error(`invalid number: ${raw}`);
+    }
+    const value = Number(raw);
+    if ((typeof raw === "string" && !decimal.test(raw)) || !Number.isFinite(value)) {
+      throw new Error(`invalid number: ${raw}`);
+    }
+    return value;
+  }
 
   /** @internal 只供 SvgDocument 在完整结构校验后更新归属。 */
   setTreeContext(

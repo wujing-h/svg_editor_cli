@@ -93,3 +93,27 @@ test("CLI scales and deletes shapes with reversible summaries and errors", () =>
     "g#scene restored into svg",
   ]);
 });
+
+test("CLI sets text, styles, and geometry with exact undo feedback after errors", () => {
+  const result = spawnSync(process.execPath, [path.join(__dirname, "../dist/main.js")], {
+    input: 'init\ncreate text title 20 40 "My Diagram"\nset title text "My Diagram v2"\nundo\nredo\nset title fill #ff0000\nundo\nset title x 0\nset title font-size 16\nundo\nredo\n',
+    encoding: "utf8",
+    timeout: 5000,
+  });
+  assert.equal(result.error, undefined);
+  assert.equal(result.status, 0);
+  assert.equal(result.stderr, "");
+  assert.deepEqual(result.stdout.trim().split(/\r?\n/).slice(1), [
+    "canvas 800x600 created",
+    "text#title created",
+    'text#title updated: text="My Diagram v2"',
+    'text#title updated: text="My Diagram"',
+    'text#title updated: text="My Diagram v2"',
+    'text#title updated: fill="#ff0000"',
+    "text#title updated: fill=(unset)",
+    "text#title updated: x=0",
+    "error: unknown attribute: font-size",
+    "text#title updated: x=20",
+    "text#title updated: x=0",
+  ]);
+});

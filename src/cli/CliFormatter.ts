@@ -1,4 +1,4 @@
-// 用途：排版命令摘要与帮助内容，统一 CLI 的错误前缀。
+// 用途：排版命令摘要、属性变化与帮助内容，统一 CLI 的错误前缀。
 import type { CommandResult } from "../application/contracts/CommandResult.js";
 
 export class CliFormatter {
@@ -21,6 +21,13 @@ export class CliFormatter {
       for (const entry of result.help) {
         lines.push(`${entry.syntax.padEnd(width)}  ${entry.description}`);
       }
+    }
+
+    if (result.attributeChange !== undefined) {
+      const { kind, id, attribute, value } = result.attributeChange;
+      // 引用字符串保留空格并转义换行；缺失状态与空字符串、零明确区分。
+      const formatted = value === undefined ? "(unset)" : typeof value === "string" ? JSON.stringify(value) : String(value);
+      lines.push(`${kind}#${id} updated: ${attribute}=${formatted}`);
     }
 
     return lines;

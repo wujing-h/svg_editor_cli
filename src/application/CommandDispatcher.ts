@@ -6,6 +6,7 @@ import { CreateCommand } from "./commands/CreateCommand.js";
 import { MoveCommand } from "./commands/MoveCommand.js";
 import { ScaleCommand } from "./commands/ScaleCommand.js";
 import { DeleteCommand } from "./commands/DeleteCommand.js";
+import { SetCommand } from "./commands/SetCommand.js";
 import { UndoCommand } from "./commands/UndoCommand.js";
 import { RedoCommand } from "./commands/RedoCommand.js";
 import { ShapeFactory } from "../domain/ShapeFactory.js";
@@ -43,6 +44,8 @@ export class CommandDispatcher {
         return new ScaleCommand(this.session.requireDocument(), input.arguments);
       case "delete":
         return new DeleteCommand(this.session.requireDocument(), input.arguments);
+      case "set":
+        return new SetCommand(this.session.requireDocument(), input.arguments);
       case "undo":
         return new UndoCommand(this.session, input.arguments);
       case "redo":

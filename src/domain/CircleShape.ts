@@ -78,4 +78,18 @@ export class CircleShape extends Shape {
       throw new Error("circle radius must be non-negative");
     }
   }
+
+  protected override getOwnAttribute(attribute: string): number {
+    return this.geometryAttribute(attribute, { cx: this.cx, cy: this.cy, r: this.r });
+  }
+
+  protected override setOwnAttribute(attribute: string, raw: string | number): void {
+    this.getOwnAttribute(attribute);
+    const value = this.numberAttribute(raw);
+    this.updateGeometry(
+      attribute === "cx" ? value : this.cx,
+      attribute === "cy" ? value : this.cy,
+      attribute === "r" ? value : this.r,
+    );
+  }
 }

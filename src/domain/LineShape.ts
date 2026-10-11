@@ -80,4 +80,19 @@ export class LineShape extends Shape {
       throw new Error("geometry values must be finite");
     }
   }
+
+  protected override getOwnAttribute(attribute: string): number {
+    return this.geometryAttribute(attribute, { x1: this.x1, y1: this.y1, x2: this.x2, y2: this.y2 });
+  }
+
+  protected override setOwnAttribute(attribute: string, raw: string | number): void {
+    this.getOwnAttribute(attribute);
+    const value = this.numberAttribute(raw);
+    this.updateGeometry(
+      attribute === "x1" ? value : this.x1,
+      attribute === "y1" ? value : this.y1,
+      attribute === "x2" ? value : this.x2,
+      attribute === "y2" ? value : this.y2,
+    );
+  }
 }

@@ -92,11 +92,27 @@ export class RectShape extends Shape {
   }
 
   private static validateGeometry(x: number, y: number, width: number, height: number): void {
+    // 新建、几何操作和属性修改共用相同的范围约束。
     if (![x, y, width, height].every(Number.isFinite)) {
       throw new Error("geometry values must be finite");
     }
     if (width < 0 || height < 0) {
       throw new Error("rectangle dimensions must be non-negative");
     }
+  }
+
+  protected override getOwnAttribute(attribute: string): number {
+    return this.geometryAttribute(attribute, { x: this.x, y: this.y, width: this.width, height: this.height });
+  }
+
+  protected override setOwnAttribute(attribute: string, raw: string | number): void {
+    this.getOwnAttribute(attribute);
+    const value = this.numberAttribute(raw);
+    this.updateGeometry(
+      attribute === "x" ? value : this.x,
+      attribute === "y" ? value : this.y,
+      attribute === "width" ? value : this.width,
+      attribute === "height" ? value : this.height,
+    );
   }
 }
