@@ -141,3 +141,29 @@ test("CLI moves shapes between containers and layers with reversible feedback", 
     "circle#c1 restored to position 1 in g#scene",
   ]);
 });
+
+test("CLI groups, dissolves, and restores containers with required errors", () => {
+  const result = spawnSync(process.execPath, [path.join(__dirname, "../dist/main.js")], {
+    input: "init\ncreate g scene\ncreate circle a 1 2 3 in scene\ncreate circle b 4 5 6 in scene\ngroup pack b a\ngroup bad a pack\nungroup pack\nundo\nredo\nungroup scene\nundo\nundo\nredo\n",
+    encoding: "utf8",
+    timeout: 5000,
+  });
+  assert.equal(result.error, undefined);
+  assert.equal(result.status, 0);
+  assert.equal(result.stderr, "");
+  assert.deepEqual(result.stdout.trim().split(/\r?\n/).slice(1), [
+    "canvas 800x600 created",
+    "g#scene created",
+    "circle#a created in g#scene",
+    "circle#b created in g#scene",
+    "g#pack created with 2 children",
+    "error: cannot group a container into its own descendant: pack",
+    "g#pack ungrouped",
+    "g#pack restored",
+    "g#pack ungrouped",
+    "error: cannot ungroup top-level container: scene",
+    "g#pack restored",
+    "g#pack grouping undone",
+    "g#pack created with 2 children",
+  ]);
+});

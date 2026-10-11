@@ -10,6 +10,8 @@ import { SetCommand } from "./commands/SetCommand.js";
 import { AddToCommand } from "./commands/AddToCommand.js";
 import { FrontCommand } from "./commands/FrontCommand.js";
 import { BackCommand } from "./commands/BackCommand.js";
+import { GroupCommand } from "./commands/GroupCommand.js";
+import { UngroupCommand } from "./commands/UngroupCommand.js";
 import { UndoCommand } from "./commands/UndoCommand.js";
 import { RedoCommand } from "./commands/RedoCommand.js";
 import { ShapeFactory } from "../domain/ShapeFactory.js";
@@ -55,6 +57,10 @@ export class CommandDispatcher {
         return new FrontCommand(this.session.requireDocument(), input.arguments);
       case "back":
         return new BackCommand(this.session.requireDocument(), input.arguments);
+      case "group":
+        return new GroupCommand(this.session.requireDocument(), this.factory, input.arguments);
+      case "ungroup":
+        return new UngroupCommand(this.session.requireDocument(), input.arguments);
       case "undo":
         return new UndoCommand(this.session, input.arguments);
       case "redo":

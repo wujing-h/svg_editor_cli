@@ -27,6 +27,8 @@ export class HelpCommand implements Command {
         { syntax: "addto <gid> <id>", description: "move a shape into a container as its last child" },
         { syntax: "front <id>", description: "bring a shape to the front among its siblings" },
         { syntax: "back <id>", description: "send a shape to the back among its siblings" },
+        { syntax: "group <newGid> <id1> [id2...]", description: "group existing shapes in their original tree order" },
+        { syntax: "ungroup <gid>", description: "replace a non-top-level group with its children" },
         { syntax: "undo", description: "undo the last edit" },
         { syntax: "redo", description: "redo the last undone edit" },
         { syntax: "help", description: "show available commands" },

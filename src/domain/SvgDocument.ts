@@ -1,6 +1,8 @@
 // 用途：管理画布与有序图形树，受控维护唯一 id、父子关系及文档归属。
 import type { CanvasSize } from "./CanvasSize.js";
 import type { GroupShape } from "./GroupShape.js";
+import { GroupingChange } from "./GroupingChange.js";
+import type { SiblingOrder } from "./SiblingOrder.js";
 import type { Shape } from "./Shape.js";
 import type { PlacementChange } from "./PlacementChange.js";
 import type { SubtreeLocation } from "./SubtreeLocation.js";
@@ -114,6 +116,198 @@ export class SvgDocument {
     }
     // 活动对象换位与已删除子树接回使用不同入口，不能互相代替。
     this.relocate(location.shape, location.parent, location.index);
+  }
+
+  group(group: GroupShape, memberIds: readonly string[]): GroupingChange {
+    if (this.shapesById.has(group.id)) {
+      throw new Error(`id already exists: ${group.id}`);
+    }
+    if (group.document !== undefined || group.parent !== undefined || group.children.length !== 0) {
+      throw new Error("new group must be an empty detached container");
+    }
+    if (memberIds.length === 0) {
+      throw new Error("group requires at least one member");
+    }
+    const members = new Set<Shape>();
+    for (const id of memberIds) {
+      const member = this.findShape(id);
+      if (members.has(member)) {
+        throw new Error(`duplicate group member: ${id}`);
+      }
+      members.add(member);
+    }
+    for (const member of members) {
+      for (let ancestor = member.parent; ancestor !== undefined; ancestor = ancestor.parent) {
+        if (members.has(ancestor)) {
+          throw new Error(`cannot group a container into its own descendant: ${ancestor.id}`);
+        }
+      }
+    }
+
+    // 按原文档的先序遍历收编，不按命令参数顺序重新排列成员。
+    const ordered = this.rootShapes.flatMap((root) => this.collectSubtree(root))
+      .filter((shape) => members.has(shape));
+    const parent = this.commonParent(ordered);
+    const parents = new Set<GroupShape | undefined>([parent, group]);
+    for (const member of ordered) {
+      parents.add(member.parent);
+    }
+    const before: SiblingOrder[] = [...parents].map((owner) => ({ parent: owner, children: this.siblingsOf(owner) }));
+    const after = before.map((order): SiblingOrder => {
+      if (order.parent === group) {
+        return { parent: group, children: ordered };
+      }
+      const children = order.children.filter((child) => !members.has(child));
+      if (order.parent === parent) {
+        children.push(group);
+      }
+      return { parent: order.parent, children };
+    });
+    const change = new GroupingChange(this, group, false, before, after);
+    this.restoreGrouping(change, true);
+    return change;
+  }
+
+  ungroup(id: string): GroupingChange {
+    const group = this.findContainer(id);
+    const parent = group.parent;
+    if (parent === undefined) {
+      throw new Error(`cannot ungroup top-level container: ${id}`);
+    }
+    const siblings = this.siblingsOf(parent);
+    const index = siblings.indexOf(group);
+    if (index < 0) {
+      throw new Error("inconsistent shape tree");
+    }
+    const children = group.children;
+    const updated = [...siblings];
+    // 子节点原地替换组，前后兄弟及组内成员的顺序均保持不变。
+    updated.splice(index, 1, ...children);
+    const change = new GroupingChange(this, group, true,
+      [{ parent, children: siblings }, { parent: group, children }],
+      [{ parent, children: updated }, { parent: group, children: [] }],
+    );
+    this.restoreGrouping(change, true);
+    return change;
+  }
+
+  restoreGrouping(change: GroupingChange, after: boolean): void {
+    const source = change.getOrders(this, !after);
+    const target = change.getOrders(this, after);
+    const group = change.group;
+    const present = change.isGroupPresent(after);
+    if (change.isGroupPresent(!after)) {
+      this.requireActiveShape(group);
+    } else {
+      if (this.shapesById.has(group.id)) {
+        throw new Error(`id already exists: ${group.id}`);
+      }
+      if (group.document !== undefined || group.parent !== undefined || group.children.length !== 0) {
+        throw new Error("original group is not detached and empty");
+      }
+    }
+
+    // 恢复前核对全部受影响列表和原对象，不能恢复一半才发现另一父容器已变化。
+    const oldNodes = new Set<Shape>();
+    const placements = new Map<Shape, GroupShape | undefined>();
+    if (source.length !== target.length) {
+      throw new Error("invalid grouping change");
+    }
+    for (const [index, order] of source.entries()) {
+      const next = target[index];
+      if (next === undefined || next.parent !== order.parent) {
+        throw new Error("invalid grouping change");
+      }
+      if (order.parent !== undefined) {
+        const parentId = order.parent.id;
+        if (!order.parent.isContainer()) {
+          throw new Error(`not a container: ${parentId}`);
+        }
+      }
+      if (order.parent !== undefined && order.parent !== group) {
+        this.requireActiveShape(order.parent);
+      }
+      const current = this.siblingsOf(order.parent);
+      if (current.length !== order.children.length || current.some((child, i) => child !== order.children[i])) {
+        throw new Error("group structure changed since grouping command");
+      }
+      for (const child of order.children) {
+        this.requireActiveShape(child);
+        oldNodes.add(child);
+      }
+      for (const child of next.children) {
+        if (placements.has(child)) {
+          throw new Error("invalid grouping change: repeated node");
+        }
+        placements.set(child, next.parent);
+      }
+      if (!present && next.parent === group && next.children.length !== 0) {
+        throw new Error("detached group must be empty");
+      }
+    }
+    if (placements.has(group) !== present) {
+      throw new Error("invalid group placement");
+    }
+    // 除了组本身的接入/移除，其余节点必须完整保留，不能重复或丢失。
+    for (const node of oldNodes) {
+      if (node !== group && !placements.has(node)) {
+        throw new Error("invalid grouping change: missing node");
+      }
+    }
+    for (const node of placements.keys()) {
+      if (node !== group && !oldNodes.has(node)) {
+        throw new Error("invalid grouping change: unexpected node");
+      }
+      const seen = new Set<Shape>([node]);
+      let ancestor = placements.get(node);
+      while (ancestor !== undefined) {
+        if (seen.has(ancestor) || (!present && ancestor === group)) {
+          throw new Error("grouping change would create an invalid tree");
+        }
+        seen.add(ancestor);
+        ancestor = placements.has(ancestor) ? placements.get(ancestor) : ancestor.parent;
+      }
+    }
+
+    // 校验完成后一次应用局部计划；成员子孙和几何不变，仅切换组的活动索引。
+    for (const order of target) {
+      this.replaceSiblings(order.parent, order.children);
+    }
+    for (const [node, parent] of placements) {
+      node.setTreeContext(treeMutationToken, parent, this);
+    }
+    if (present) {
+      this.shapesById.set(group.id, group);
+    } else {
+      this.shapesById.delete(group.id);
+      group.setTreeContext(treeMutationToken, undefined, undefined);
+    }
+  }
+
+  private commonParent(members: readonly Shape[]): GroupShape | undefined {
+    let candidate = members[0]?.parent;
+    while (candidate !== undefined) {
+      const current = candidate;
+      const shared = members.every((member) => {
+        for (let ancestor = member.parent; ancestor !== undefined; ancestor = ancestor.parent) {
+          if (ancestor === current) {
+            return true;
+          }
+        }
+        return false;
+      });
+      if (shared) {
+        return current;
+      }
+      candidate = current.parent;
+    }
+    return undefined;
+  }
+
+  private requireActiveShape(shape: Shape): void {
+    if (this.shapesById.get(shape.id) !== shape || shape.document !== this) {
+      throw new Error(`original shape is not in this document: ${shape.id}`);
+    }
   }
 
   private relocate(shape: Shape, parent: GroupShape | undefined, index?: number): PlacementChange {
