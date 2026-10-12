@@ -1,5 +1,7 @@
 # 软件设计lab1：SVG CLI 编辑器
 
+项目地址：https://github.com/wujing-h/svg_editor_cli.git
+
 ## 一、项目说明与运行
 
 本项目完成 Lab1 Phase 1 的命令行 SVG 编辑器。采用 TypeScript 和面向对象设计，内置 `rect`、`circle`、`ellipse`、`line`、`text`、`g` 六种图形，支持编辑、结构查询、局部撤销重做及 SVG 文件读写。
@@ -103,7 +105,7 @@ node dist/main.js < commands.txt
 
 开发先完成项目约束、环境配置、GitHub 仓库准备和架构讨论，再进入业务实现。作者负责需求判断、代码审查、课程文档和 Git 提交，AI 负责架构建议、增量实现和必要检查。
 
-下表依据已有关键对话与实际实现记录整理，不作为逐字对话转录。详细记录见 `conservation.md`
+下表依据已有关键对话与实际实现记录整理，不作为逐字对话转录。详细记录见 `conversation.md`
 
 | 问题或讨论 | 作者的判断与处理 | 实现结果 |
 | --- | --- | --- |
