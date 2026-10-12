@@ -15,6 +15,7 @@ import { UngroupCommand } from "./commands/UngroupCommand.js";
 import { TreeCommand } from "./commands/TreeCommand.js";
 import { ShowCommand } from "./commands/ShowCommand.js";
 import { SaveCommand } from "./commands/SaveCommand.js";
+import { ReadCommand } from "./commands/ReadCommand.js";
 import { UndoCommand } from "./commands/UndoCommand.js";
 import { RedoCommand } from "./commands/RedoCommand.js";
 import { ShapeFactory } from "../domain/ShapeFactory.js";
@@ -70,6 +71,8 @@ export class CommandDispatcher {
         return new ShowCommand(this.session.requireDocument(), input.arguments);
       case "save":
         return new SaveCommand(this.session, input.arguments);
+      case "read":
+        return new ReadCommand(this.session, input.arguments);
       case "undo":
         return new UndoCommand(this.session, input.arguments);
       case "redo":

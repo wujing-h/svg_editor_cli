@@ -14,6 +14,8 @@ export abstract class Shape {
   private fillValue: string | undefined;
   private strokeValue: string | undefined;
   private strokeWidthValue: number | undefined;
+  private readonly fontSizeValue: string | undefined;
+  private readonly textAnchorValue: string | undefined;
   abstract readonly kind: string;
 
   protected constructor(id: string, styles: ShapeStyles = {}) {
@@ -27,6 +29,8 @@ export abstract class Shape {
     this.fillValue = styles.fill;
     this.strokeValue = styles.stroke;
     this.strokeWidthValue = styles.strokeWidth;
+    this.fontSizeValue = styles.fontSize;
+    this.textAnchorValue = styles.textAnchor;
   }
 
   get id(): string {
@@ -171,6 +175,12 @@ export abstract class Shape {
     }
     if (this.strokeWidthValue !== undefined) {
       attributes["stroke-width"] = this.strokeWidthValue;
+    }
+    if (this.fontSizeValue !== undefined) {
+      attributes["font-size"] = this.fontSizeValue;
+    }
+    if (this.textAnchorValue !== undefined) {
+      attributes["text-anchor"] = this.textAnchorValue;
     }
     return attributes;
   }

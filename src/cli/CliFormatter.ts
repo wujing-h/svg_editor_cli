@@ -6,6 +6,10 @@ export class CliFormatter {
   format(result: CommandResult): readonly string[] {
     const lines: string[] = [];
 
+    for (const warning of result.warnings ?? []) {
+      lines.push(`warning: assigned id ${warning.id} to unnamed <${warning.kind}>`);
+    }
+
     if (result.tree !== undefined) {
       const { canvas, roots } = result.tree;
       if (canvas !== undefined) {

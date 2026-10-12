@@ -6,6 +6,7 @@ import { EditCommand } from "./EditCommand.js";
 import type { Command } from "./contracts/Command.js";
 import type { CommandResult } from "./contracts/CommandResult.js";
 import type { DocumentStore } from "./contracts/DocumentStore.js";
+import type { DocumentReadResult } from "./contracts/DocumentReadResult.js";
 
 export class EditorSession {
   private document: SvgDocument | undefined;
@@ -63,6 +64,21 @@ export class EditorSession {
     this.associatedPath = target;
     this.history.resetAfterIo();
     return { path: target, elementCount };
+  }
+
+  async read(filePath: string): Promise<DocumentReadResult> {
+    if (filePath.length === 0) {
+      throw new Error("file path must not be empty");
+    }
+    if (this.store === undefined) {
+      throw new Error("document store is not configured");
+    }
+    const loaded = await this.store.read(filePath);
+    // 独立文档完整读入后才替换会话；失败保留旧文档、关联路径和两个历史栈。
+    this.document = loaded.document;
+    this.associatedPath = filePath;
+    this.history.resetAfterIo();
+    return loaded;
   }
 
   undo(): CommandResult {

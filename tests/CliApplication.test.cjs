@@ -17,7 +17,8 @@ test("CLI handles comments, errors, help, and EOF sequentially", () => {
   assert.match(result.stdout, /error: unknown command: unknown/);
   assert.match(result.stdout, /error: usage: help/);
   assert.match(result.stdout, /help\s+show available commands/);
-  assert.doesNotMatch(result.stdout, /svg> /);
+  // read <file.svg> 的帮助文本也含 svg>，提示符只出现在行首。
+  assert.doesNotMatch(result.stdout, /^svg> /m);
 });
 
 test("CLI creates, resizes, and queries a canvas sequentially after errors", () => {

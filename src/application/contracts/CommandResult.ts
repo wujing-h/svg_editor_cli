@@ -2,6 +2,7 @@
 import type { ShapeView } from "./ShapeView.js";
 
 export interface CommandResult {
+  readonly warnings?: readonly { readonly kind: string; readonly id: string }[];
   readonly tree?: {
     readonly canvas?: { readonly width: number; readonly height: number };
     readonly roots: readonly ShapeView[];

@@ -15,6 +15,7 @@ interface ShapeDefinition {
   readonly syntax: string;
   readonly paint?: "fill" | "stroke";
   readonly requiresText?: boolean;
+  readonly pairedRadii?: readonly [string, string];
   readonly build: (id: string, attributes: Attributes, styles: ShapeStyles, text?: string) => Shape;
 }
 
@@ -39,6 +40,7 @@ export class ShapeFactory {
     }],
     ["ellipse", {
       geometry: ["cx", "cy", "rx", "ry"], paint: "fill",
+      pairedRadii: ["rx", "ry"],
       syntax: "create ellipse <id> <cx> <cy> <rx> <ry> [fill]",
       build: (id, attributes, styles) => new EllipseShape(
         id, this.number(attributes, "cx"), this.number(attributes, "cy"),
@@ -69,7 +71,7 @@ export class ShapeFactory {
 
   create(kind: string, id: string, attributes: Attributes = {}, text?: string): Shape {
     const definition = this.findDefinition(kind);
-    const allowed = new Set([...definition.geometry, "fill", "stroke", "stroke-width"]);
+    const allowed = new Set([...definition.geometry, "fill", "stroke", "stroke-width", "font-size", "text-anchor"]);
     for (const name of Object.keys(attributes)) {
       if (!allowed.has(name)) {
         throw new Error(`unknown attribute: ${name}`);
@@ -79,6 +81,34 @@ export class ShapeFactory {
       throw new Error("text content is only supported by text shapes");
     }
     return definition.build(id, attributes, this.styles(attributes), text);
+  }
+
+  createFromSvg(kind: string, id: string, attributes: Attributes, content: string): Shape {
+    const definition = this.findDefinition(kind);
+    const normalized: Record<string, string | number> = { ...attributes };
+    // SVG 2 的椭圆只有一个半径时，另一半径使用相同长度；同时省略时为零。
+    if (definition.pairedRadii !== undefined) {
+      const [first, second] = definition.pairedRadii;
+      for (const [name, other] of [[first, second], [second, first]] as const) {
+        if (attributes[name] === undefined || attributes[name] === "auto") {
+          const value = attributes[other];
+          normalized[name] = value === undefined || value === "auto" ? 0 : value;
+        }
+      }
+    }
+    for (const name of definition.geometry) {
+      const raw = normalized[name] ?? 0;
+      normalized[name] = typeof raw === "string" ? raw.trim().replace(/px$/, "") : raw;
+    }
+    const strokeWidth = normalized["stroke-width"];
+    if (typeof strokeWidth === "string") {
+      normalized["stroke-width"] = strokeWidth.trim().replace(/px$/, "");
+    }
+    if (!definition.requiresText && content.trim() !== "") {
+      throw new Error(`unexpected text content in <${kind}>`);
+    }
+    // 类型识别、默认几何与内容语义仍集中在工厂，不让 SvgReader 再按标签分派。
+    return this.create(kind, id, normalized, definition.requiresText ? content : undefined);
   }
 
   createFromParameters(kind: string, id: string, parameters: readonly string[]): Shape {
@@ -138,7 +168,7 @@ export class ShapeFactory {
   }
 
   private styles(attributes: Attributes): ShapeStyles {
-    const styles: { fill?: string; stroke?: string; strokeWidth?: number } = {};
+    const styles: { fill?: string; stroke?: string; strokeWidth?: number; fontSize?: string; textAnchor?: string } = {};
     for (const name of ["fill", "stroke"] as const) {
       const value = attributes[name];
       if (value !== undefined) {
@@ -150,6 +180,21 @@ export class ShapeFactory {
     }
     if (attributes["stroke-width"] !== undefined) {
       styles.strokeWidth = this.number(attributes, "stroke-width");
+    }
+    const fontSize = attributes["font-size"];
+    if (fontSize !== undefined) {
+      if (typeof fontSize !== "string" || fontSize.trim() === "") {
+        throw new Error("invalid font-size");
+      }
+      // 保留 SVG/CSS 原始表示，几何缩放不改写这个只读展示属性。
+      styles.fontSize = fontSize;
+    }
+    const textAnchor = attributes["text-anchor"];
+    if (textAnchor !== undefined) {
+      if (typeof textAnchor !== "string" || !["start", "middle", "end", "inherit"].includes(textAnchor)) {
+        throw new Error("invalid text-anchor");
+      }
+      styles.textAnchor = textAnchor;
     }
     return styles;
   }

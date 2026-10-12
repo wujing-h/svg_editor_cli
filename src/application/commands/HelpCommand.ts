@@ -20,6 +20,7 @@ export class HelpCommand implements Command {
         { syntax: "init [w] [h]", description: "create a canvas (default 800x600)" },
         { syntax: "canvas [w] [h]", description: "show or resize the current canvas" },
         { syntax: "save [file.svg]", description: "save to a given or previously associated path" },
+        { syntax: "read <file.svg>", description: "load SVG and assign IDs to unnamed shapes" },
         { syntax: "create <type> <id> [params...] [in <containerId>]", description: "create rect/circle/ellipse/line/text/g" },
         { syntax: "move <id> <dx> <dy>", description: "move a shape or all descendants of a group" },
         { syntax: "scale <id> <factor>", description: "scale all geometry by a positive factor" },
