@@ -18,6 +18,7 @@ import { PluginLoader } from "./PluginLoader.js";
 import { createRequire } from "node:module";
 import type { PluginManifest } from "../application/contracts/PluginManifest.js";
 import stats from "../../plugins/plugin-stats";
+import dir from "../../plugins/plugin-dir";
 
 export class EditorBootstrap {
   readonly session: EditorSession;
@@ -62,5 +63,7 @@ export class EditorBootstrap {
     // 实例从包入口导入，清单直接读取该包的 package.json，不另抄 contributes。
     const manifest = createRequire(__filename)("../../plugins/plugin-stats/package.json") as PluginManifest;
     this.loader.activate(manifest, stats);
+    const dirManifest = createRequire(__filename)("../../plugins/plugin-dir/package.json") as PluginManifest;
+    this.loader.activate(dirManifest, dir);
   }
 }
