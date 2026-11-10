@@ -4,6 +4,7 @@ import { CommandDispatcher } from "./application/CommandDispatcher.js";
 import { EditorSession } from "./application/EditorSession.js";
 import { PluginHost } from "./application/PluginHost.js";
 import { ShapeRegistry } from "./application/ShapeRegistry.js";
+import { AttributeService } from "./application/AttributeService.js";
 import { BuiltinCommands } from "./builtins/BuiltinCommands.js";
 import { BuiltinShapes } from "./builtins/BuiltinShapes.js";
 import { ShapeFactory } from "./domain/ShapeFactory.js";
@@ -23,7 +24,7 @@ const session = new EditorSession(new SvgFileStore(new SvgWriter(), new SvgReade
 const plugins = new PluginHost({ editor: session, directory: new NodeDirectoryAdapter() }, shapes);
 const builtinShapes = new BuiltinShapes();
 plugins.activate(builtinShapes.manifest, builtinShapes);
-const builtins = new BuiltinCommands(session, factory);
+const builtins = new BuiltinCommands(session, factory, new AttributeService(() => plugins.attributes.getAll()));
 plugins.activate(builtins.manifest, builtins);
 const application = new CliApplication(
   new CommandDispatcher(session, plugins.commands),

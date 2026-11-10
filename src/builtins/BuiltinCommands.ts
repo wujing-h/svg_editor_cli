@@ -24,14 +24,17 @@ import type { Plugin } from "../application/contracts/Plugin.js";
 import type { PluginContext } from "../application/contracts/PluginContext.js";
 import type { PluginManifest } from "../application/contracts/PluginManifest.js";
 import type { ShapeFactory } from "../domain/ShapeFactory.js";
+import { AttributeService } from "../application/AttributeService.js";
 
 export class BuiltinCommands implements Plugin {
   private readonly session: EditorSession;
   private readonly factory: ShapeFactory;
+  private readonly attributes: AttributeService;
 
-  constructor(session: EditorSession, factory: ShapeFactory) {
+  constructor(session: EditorSession, factory: ShapeFactory, attributes = new AttributeService()) {
     this.session = session;
     this.factory = factory;
+    this.attributes = attributes;
   }
 
   get manifest(): PluginManifest {
@@ -64,7 +67,7 @@ export class BuiltinCommands implements Plugin {
       { name: "delete", syntax: "delete <id>", description: "delete a shape and all its descendants",
         create: (tokens) => new DeleteCommand(this.session.requireDocument(), tokens) },
       { name: "set", syntax: "set <id> <attr> <value>", description: "set a supported geometry, style, or text property",
-        create: (tokens) => new SetCommand(this.session.requireDocument(), tokens) },
+        create: (tokens) => new SetCommand(this.session.requireDocument(), tokens, this.attributes) },
       { name: "addto", syntax: "addto <gid> <id>", description: "move a shape into a container as its last child",
         create: (tokens) => new AddToCommand(this.session.requireDocument(), tokens) },
       { name: "front", syntax: "front <id>", description: "bring a shape to the front among its siblings",

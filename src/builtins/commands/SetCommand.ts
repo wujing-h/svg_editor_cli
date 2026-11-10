@@ -1,5 +1,6 @@
-// 用途：通过统一图形接口修改一个属性，保存原值和缺失状态以支持撤销重做。
-import type { AttributeSnapshot } from "../../domain/AttributeSnapshot.js";
+// 用途：执行属性策略并将整批局部属性修改作为一个可撤销命令。
+import { AttributeService } from "../../application/AttributeService.js";
+import type { AttributeOperation } from "../../application/AttributeService.js";
 import type { Shape } from "../../domain/Shape.js";
 import type { SvgDocument } from "../../domain/SvgDocument.js";
 import { CommandArguments } from "../../application/CommandArguments.js";
@@ -10,46 +11,43 @@ import type { CommandToken } from "../../application/contracts/CommandToken.js";
 export class SetCommand extends EditCommand {
   private readonly document: SvgDocument;
   private readonly arguments: CommandArguments;
+  private readonly attributes: AttributeService;
   private shape: Shape | undefined;
-  private before: AttributeSnapshot | undefined;
-  private after: AttributeSnapshot | undefined;
+  private operation: AttributeOperation | undefined;
 
-  constructor(document: SvgDocument, tokens: readonly CommandToken[]) {
+  constructor(document: SvgDocument, tokens: readonly CommandToken[], attributes = new AttributeService()) {
     super();
     this.document = document;
     this.arguments = new CommandArguments(tokens);
+    this.attributes = attributes;
   }
 
   override execute(): CommandResult {
     this.arguments.requireCount(3, 3, "set <id> <attr> <value>");
     const shape = this.document.findShape(this.arguments.stringAt(0));
     const attribute = this.arguments.stringAt(1);
-    // 捕获原值同时检查属性是否受支持；数值解析和范围校验由对象负责。
-    const before = shape.captureAttribute(attribute);
-    shape.setAttribute(attribute, this.arguments.stringAt(2));
+    const operation = this.attributes.apply(this.document, shape, attribute, this.arguments.stringAt(2));
     this.shape = shape;
-    this.before = before;
-    this.after = shape.captureAttribute(attribute);
-    return this.result(shape, this.after);
+    this.operation = operation;
+    return operation.afterResult;
   }
 
   override undo(): CommandResult {
-    if (this.before === undefined) {
+    if (this.operation === undefined) {
       throw new Error("set command has not been executed");
     }
-    const shape = this.requireShape();
-    // 原属性缺失时恢复缺失，不写入默认颜色或零宽度。
-    shape.restoreAttribute(this.before);
-    return this.result(shape, this.before);
+    this.requireShape();
+    this.operation.change.restore(false);
+    return this.operation.beforeResult;
   }
 
   override redo(): CommandResult {
-    if (this.after === undefined) {
+    if (this.operation === undefined) {
       throw new Error("set command has not been executed");
     }
-    const shape = this.requireShape();
-    shape.restoreAttribute(this.after);
-    return this.result(shape, this.after);
+    this.requireShape();
+    this.operation.change.restore(true);
+    return this.operation.afterResult;
   }
 
   private requireShape(): Shape {
@@ -61,13 +59,5 @@ export class SetCommand extends EditCommand {
       throw new Error("set target is no longer in this document");
     }
     return shape;
-  }
-
-  private result(shape: Shape, snapshot: AttributeSnapshot): CommandResult {
-    return {
-      attributeChange: {
-        kind: shape.type, id: shape.id, attribute: snapshot.attribute, value: snapshot.getValue(shape),
-      },
-    };
   }
 }
