@@ -3,6 +3,7 @@ export type { Plugin } from "../application/contracts/Plugin.js";
 export type { PluginManifest } from "../application/contracts/PluginManifest.js";
 export type { PluginContext, PluginDisposable } from "../application/contracts/PluginContext.js";
 export type { EditorServices } from "../application/contracts/EditorServices.js";
+export type { DocumentSnapshot, SessionEvent, SessionEventKind, SessionListener } from "../application/contracts/SessionEvent.js";
 export type { Command } from "../application/contracts/Command.js";
 export type { CommandDefinition } from "../application/contracts/CommandDefinition.js";
 export type { CommandResult } from "../application/contracts/CommandResult.js";

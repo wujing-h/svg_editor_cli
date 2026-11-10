@@ -1,8 +1,23 @@
 // 用途：排版命令摘要、图形查询、属性变化与帮助内容，统一 CLI 的错误前缀。
 import type { CommandResult } from "../application/contracts/CommandResult.js";
 import type { ShapeView } from "../application/contracts/ShapeView.js";
+import type { TreeDecorator } from "../application/contracts/TreeDecorator.js";
+import { ReadonlyData } from "../application/ReadonlyData.js";
+import { BaseTreeLineRenderer } from "./BaseTreeLineRenderer.js";
+import { DecoratedTreeLineRenderer } from "./DecoratedTreeLineRenderer.js";
+import type { TreeLineRenderer } from "./TreeLineRenderer.js";
+import { ShapeText } from "./ShapeText.js";
 
 export class CliFormatter {
+  private readonly getDecorators: () => readonly TreeDecorator[];
+  private readonly reportError: (error: unknown) => void;
+  private readonly failedDecorators = new WeakSet<TreeDecorator>();
+
+  constructor(getDecorators: () => readonly TreeDecorator[] = () => [], reportError: (error: unknown) => void = () => undefined) {
+    this.getDecorators = getDecorators;
+    this.reportError = reportError;
+  }
+
   format(result: CommandResult): readonly string[] {
     const lines: string[] = [];
     lines.push(...(result.lines ?? []));
@@ -12,28 +27,29 @@ export class CliFormatter {
     }
 
     if (result.tree !== undefined) {
-      const { canvas, roots } = result.tree;
+      const { canvas, roots } = ReadonlyData.copy(result.tree);
+      const renderer = this.createTreeRenderer();
       if (canvas !== undefined) {
-        lines.push(`svg (${canvas.width}x${canvas.height})`);
-        this.appendTree(lines, roots, "");
+        lines.push(renderer.render(Object.freeze({ shape: undefined, canvas })));
+        this.appendTree(lines, roots, "", renderer);
       } else {
         for (const root of roots) {
-          lines.push(this.treeLine(root));
-          this.appendTree(lines, root.children ?? [], "");
+          lines.push(renderer.render(Object.freeze({ shape: root, canvas: undefined })));
+          this.appendTree(lines, root.children ?? [], "", renderer);
         }
       }
     }
 
     if (result.shapeDetails !== undefined) {
       const { shape, parent } = result.shapeDetails;
-      const owner = parent === undefined ? "svg" : `${parent.kind}#${this.inlineValue(parent.id)}`;
-      lines.push(`${this.shapeLabel(shape)}  parent=${owner}`);
-      const geometry = this.attributeList(shape.geometry ?? {});
+      const owner = parent === undefined ? "svg" : `${parent.kind}#${ShapeText.inlineValue(parent.id)}`;
+      lines.push(`${ShapeText.label(shape)}  parent=${owner}`);
+      const geometry = ShapeText.attributeList(shape.geometry ?? {});
       if (geometry !== "") {
         lines.push(`  ${geometry}`);
       }
-      for (const [name, value] of this.otherAttributes(shape)) {
-        lines.push(`  ${name}=${this.inlineValue(value)}`);
+      for (const [name, value] of ShapeText.otherAttributes(shape)) {
+        lines.push(`  ${name}=${ShapeText.inlineValue(value)}`);
       }
       if (shape.text !== undefined) {
         lines.push(`  text=${JSON.stringify(shape.text)}`);
@@ -71,51 +87,29 @@ export class CliFormatter {
     return lines;
   }
 
-  private appendTree(lines: string[], shapes: readonly ShapeView[], prefix: string): void {
-    const width = Math.max(0, ...shapes.map((shape) => this.shapeLabel(shape).length)) + 2;
+  private appendTree(lines: string[], shapes: readonly ShapeView[], prefix: string, renderer: TreeLineRenderer): void {
+    const width = Math.max(0, ...shapes.map((shape) => ShapeText.label(shape).length)) + 2;
     for (const [index, shape] of shapes.entries()) {
       const last = index === shapes.length - 1;
-      lines.push(`${prefix}${last ? "└── " : "├── "}${this.treeLine(shape, width)}`);
-      this.appendTree(lines, shape.children ?? [], `${prefix}${last ? "    " : "│   "}`);
+      const context = Object.freeze({ shape, canvas: undefined });
+      lines.push(`${prefix}${last ? "└── " : "├── "}${renderer.render(context, width)}`);
+      this.appendTree(lines, shape.children ?? [], `${prefix}${last ? "    " : "│   "}`, renderer);
     }
   }
 
-  private treeLine(shape: ShapeView, width = 0): string {
-    const details: string[] = [];
-    const { position, endPosition } = shape;
-    // 消费图形给出的语义数据，避免 CLI 再写一套图形类型分派。
-    if (position !== undefined && endPosition !== undefined) {
-      details.push(`(${position.x},${position.y}) -> (${endPosition.x},${endPosition.y})`);
-    } else if (position !== undefined && shape.text !== undefined) {
-      details.push(`(${position.x},${position.y}) ${JSON.stringify(shape.text)}`);
-    } else {
-      const aliases: Readonly<Record<string, string>> = { width: "w", height: "h" };
-      const geometry = Object.entries(shape.geometry ?? {})
-        .map(([name, value]) => `${aliases[name] ?? name}=${value}`).join(" ");
-      if (geometry !== "") {
-        details.push(geometry);
+  private createTreeRenderer(): TreeLineRenderer {
+    let renderer: TreeLineRenderer = new BaseTreeLineRenderer();
+    const decorators = [...this.getDecorators()].sort((left, right) =>
+      left.order - right.order || (left.name < right.name ? -1 : left.name > right.name ? 1 : 0));
+    for (const decorator of decorators) {
+      if (!this.failedDecorators.has(decorator)) {
+        renderer = new DecoratedTreeLineRenderer(renderer, decorator, (error) => {
+          this.failedDecorators.add(decorator);
+          this.reportError(error);
+        });
       }
     }
-    details.push(...this.otherAttributes(shape).map(([name, value]) => `${name}=${this.inlineValue(value)}`));
-    const label = this.shapeLabel(shape);
-    return details.length === 0 ? label : `${label.padEnd(Math.max(width, label.length + 2))}${details.join(" ")}`;
-  }
-
-  private otherAttributes(shape: ShapeView): readonly [string, string | number][] {
-    // 来源类型标记用于 SVG 读回，类型的可见标签由树装饰器提供。
-    return Object.entries(shape.attributes).filter(([name]) => name !== "data-kind" && !Object.hasOwn(shape.geometry ?? {}, name));
-  }
-
-  private attributeList(attributes: Readonly<Record<string, number>>): string {
-    return Object.entries(attributes).map(([name, value]) => `${name}=${value}`).join(" ");
-  }
-
-  private shapeLabel(shape: ShapeView): string {
-    return `${shape.kind}#${this.inlineValue(shape.id)}`;
-  }
-
-  private inlineValue(value: string | number): string {
-    return typeof value === "string" && /\s/.test(value) ? JSON.stringify(value) : String(value);
+    return renderer;
   }
 
   formatError(error: unknown): string {

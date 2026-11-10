@@ -16,12 +16,12 @@ import { SvgReader } from "./infrastructure/SvgReader.js";
 import { SvgWriter } from "./infrastructure/SvgWriter.js";
 import { NodeDirectoryAdapter } from "./infrastructure/NodeDirectoryAdapter.js";
 
-const formatter = new CliFormatter();
 const shapes = new ShapeRegistry();
 const factory = new ShapeFactory(shapes);
 // 创建命令和 SVG 读取共享同一注册表，后续激活的图形插件对两个入口同时生效。
-const session = new EditorSession(new SvgFileStore(new SvgWriter(), new SvgReader(factory)));
+const session = new EditorSession(new SvgFileStore(new SvgWriter(), new SvgReader(factory)), reportError);
 const plugins = new PluginHost({ editor: session, directory: new NodeDirectoryAdapter() }, shapes);
+const formatter = new CliFormatter(() => plugins.decorators.getAll(), reportError);
 const builtinShapes = new BuiltinShapes();
 plugins.activate(builtinShapes.manifest, builtinShapes);
 const builtins = new BuiltinCommands(session, factory, new AttributeService(() => plugins.attributes.getAll()));
@@ -36,3 +36,7 @@ void application.run().catch((error: unknown) => {
   stderr.write(`${formatter.formatError(error)}\n`);
   process.exitCode = 1;
 }).finally(() => plugins.dispose());
+
+function reportError(error: unknown): void {
+  stderr.write(`${formatter.formatError(error)}\n`);
+}
