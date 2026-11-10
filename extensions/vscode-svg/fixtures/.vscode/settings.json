@@ -1,0 +1,7 @@
+// 用途：让演示工作区的 SVG 默认以源码打开，避免原生大纲导航重新选择图片预览。
+{
+  "workbench.editorAssociations": {
+    "*.svg": "default",
+    "*.SVG": "default"
+  }
+}
