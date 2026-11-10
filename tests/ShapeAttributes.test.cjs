@@ -1,7 +1,8 @@
 // 用途：验证各图形的属性白名单、范围约束及单属性快照恢复。
 const assert = require("node:assert/strict");
 const test = require("node:test");
-const { ShapeFactory } = require("../dist/domain/ShapeFactory.js");
+const { createShapeFactory } = require("./helpers/shapes.cjs");
+
 const { AttributeSnapshot } = require("../dist/domain/AttributeSnapshot.js");
 
 const examples = [
@@ -14,7 +15,7 @@ const examples = [
 
 for (const example of examples) {
   test(`${example.kind} sets and restores every supported geometry field independently`, () => {
-    const shape = new ShapeFactory().createFromParameters(example.kind, "s1", example.parameters);
+    const shape = createShapeFactory().createFromParameters(example.kind, "s1", example.parameters);
     for (const [attribute, value] of Object.entries(example.changes)) {
       const before = shape.describe();
       const snapshot = shape.captureAttribute(attribute);
@@ -31,7 +32,7 @@ for (const example of examples) {
 }
 
 test("common styles on all six types restore absence, empty strings, none, and zero exactly", () => {
-  const factory = new ShapeFactory();
+  const factory = createShapeFactory();
   const shapes = examples.map((example) => factory.createFromParameters(example.kind, "s1", example.parameters));
   shapes.push(factory.create("g", "g1"));
   for (const shape of shapes) {
@@ -53,7 +54,7 @@ test("common styles on all six types restore absence, empty strings, none, and z
 });
 
 test("unsupported and structural attributes never change any shape", () => {
-  const factory = new ShapeFactory();
+  const factory = createShapeFactory();
   for (const example of [...examples, { kind: "g", parameters: [], other: "x" }]) {
     const shape = factory.createFromParameters(example.kind, "s1", example.parameters);
     const before = shape.describe();
@@ -70,7 +71,7 @@ test("unsupported and structural attributes never change any shape", () => {
 });
 
 test("invalid geometry, stroke width, paints, and text values leave state unchanged", () => {
-  const factory = new ShapeFactory();
+  const factory = createShapeFactory();
   for (const [kind, attributes, attribute] of [
     ["rect", { x: 1, y: 2, width: 3, height: 4 }, "width"],
     ["circle", { cx: 1, cy: 2, r: 3 }, "r"],
@@ -96,7 +97,7 @@ test("invalid geometry, stroke width, paints, and text values leave state unchan
 });
 
 test("attribute snapshots bind to the original object and restore only one valid property", () => {
-  const factory = new ShapeFactory();
+  const factory = createShapeFactory();
   const shape = factory.create("rect", "r1", { x: 1, y: 2, width: 3, height: 4 });
   const snapshot = shape.captureAttribute("x");
   shape.setAttribute("x", 10);

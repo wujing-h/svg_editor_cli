@@ -1,16 +1,2 @@
-// 用途：定义图形插件的创建和完整子树读回入口，类型识别由提供者负责。
-import type { Shape } from "../../domain/Shape.js";
-
-export interface SvgShapeInput {
-  readonly id: string;
-  readonly tagName: string;
-  readonly attributes: Readonly<Record<string, string>>;
-  readonly text: string;
-  readonly children: readonly Shape[];
-}
-
-export interface ShapeProvider {
-  readonly name: string;
-  createFromParameters(id: string, parameters: readonly string[]): Shape;
-  createFromSvg(input: SvgShapeInput): Shape;
-}
+// 用途：沿用应用层契约入口，实际协议定义在领域侧，避免领域工厂反向依赖应用层。
+export type { ShapeProvider, ShapeAttributes, SvgShapeInput, ShapeProviderLookup } from "../../domain/ShapeProvider.js";

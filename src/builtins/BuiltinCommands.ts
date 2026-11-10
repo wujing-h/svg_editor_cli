@@ -23,14 +23,15 @@ import type { CommandDefinition } from "../application/contracts/CommandDefiniti
 import type { Plugin } from "../application/contracts/Plugin.js";
 import type { PluginContext } from "../application/contracts/PluginContext.js";
 import type { PluginManifest } from "../application/contracts/PluginManifest.js";
-import { ShapeFactory } from "../domain/ShapeFactory.js";
+import type { ShapeFactory } from "../domain/ShapeFactory.js";
 
 export class BuiltinCommands implements Plugin {
   private readonly session: EditorSession;
-  private readonly factory = new ShapeFactory();
+  private readonly factory: ShapeFactory;
 
-  constructor(session: EditorSession) {
+  constructor(session: EditorSession, factory: ShapeFactory) {
     this.session = session;
+    this.factory = factory;
   }
 
   get manifest(): PluginManifest {

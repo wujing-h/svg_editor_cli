@@ -4,13 +4,14 @@ const { spawnSync } = require("node:child_process");
 const fs = require("node:fs/promises");
 const path = require("node:path");
 const test = require("node:test");
+const { createSvgFileStore } = require("./helpers/shapes.cjs");
 const createDispatcher = require("./helpers/createDispatcher.cjs");
 const { EditorSession } = require("../dist/application/EditorSession.js");
 const { CommandLineParser } = require("../dist/cli/CommandLineParser.js");
 const { CliFormatter } = require("../dist/cli/CliFormatter.js");
-const { SvgFileStore } = require("../dist/infrastructure/SvgFileStore.js");
 
-function editor(store = new SvgFileStore()) {
+
+function editor(store = createSvgFileStore()) {
   const session = new EditorSession(store);
   const dispatcher = createDispatcher(session);
   const parser = new CommandLineParser();

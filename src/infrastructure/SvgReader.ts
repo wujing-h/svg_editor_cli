@@ -2,13 +2,13 @@
 import { DOMParser, onWarningStopParsing } from "@xmldom/xmldom";
 import type { Document, Element, Node } from "@xmldom/xmldom";
 import type { DocumentReadResult } from "../application/contracts/DocumentReadResult.js";
-import { ShapeFactory } from "../domain/ShapeFactory.js";
+import type { ShapeFactory } from "../domain/ShapeFactory.js";
 import { SvgDocument } from "../domain/SvgDocument.js";
 
 export class SvgReader {
   private readonly factory: ShapeFactory;
 
-  constructor(factory: ShapeFactory = new ShapeFactory()) {
+  constructor(factory: ShapeFactory) {
     this.factory = factory;
   }
 

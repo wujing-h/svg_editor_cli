@@ -1,8 +1,9 @@
 // 用途：验证原生 SVG 序列化、元素顺序、样式省略和 XML 文本及属性转义。
 const assert = require("node:assert/strict");
 const test = require("node:test");
+const { createShapeFactory } = require("./helpers/shapes.cjs");
 const { SvgDocument } = require("../dist/domain/SvgDocument.js");
-const { ShapeFactory } = require("../dist/domain/ShapeFactory.js");
+
 const { SvgWriter } = require("../dist/infrastructure/SvgWriter.js");
 
 test("writer emits an independent empty SVG with dimensions, namespace, and matching viewBox", () => {
@@ -14,7 +15,7 @@ test("writer emits an independent empty SVG with dimensions, namespace, and matc
 });
 
 test("writer serializes all six types in tree order, preserving explicit and omitted styles", () => {
-  const factory = new ShapeFactory();
+  const factory = createShapeFactory();
   const document = new SvgDocument(400, 300);
   document.insert(factory.create("g", "scene", { fill: "blue" }));
   for (const [kind, id, values, text] of [
@@ -49,7 +50,7 @@ test("writer serializes all six types in tree order, preserving explicit and omi
 
 test("writer escapes attributes and text while preserving Unicode and exact text whitespace", () => {
   const document = new SvgDocument(100, 100);
-  const factory = new ShapeFactory();
+  const factory = createShapeFactory();
   const id = 'a&<"\'\n\t\r';
   const text = '  中文😀 <&> "quoted"\r\n\t  ';
   document.insert(factory.create("text", id, { x: 1, y: 2, fill: 'a&"\n\t\r' }, text));
@@ -62,7 +63,7 @@ test("writer escapes attributes and text while preserving Unicode and exact text
 
 test("writer rejects XML-illegal characters without changing the document", () => {
   const document = new SvgDocument(100, 100);
-  const text = new ShapeFactory().create("text", "t", { x: 1, y: 2 }, "content");
+  const text = createShapeFactory().create("text", "t", { x: 1, y: 2 }, "content");
   document.insert(text);
   for (const value of ["a\u0000b", "\u000B", "\uD800", "\uFFFF"]) {
     text.setAttribute("text", value);

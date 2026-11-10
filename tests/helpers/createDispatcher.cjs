@@ -2,11 +2,15 @@
 const { CommandDispatcher } = require("../../dist/application/CommandDispatcher.js");
 const { PluginHost } = require("../../dist/application/PluginHost.js");
 const { BuiltinCommands } = require("../../dist/builtins/BuiltinCommands.js");
+const { BuiltinShapes } = require("../../dist/builtins/BuiltinShapes.js");
+const { ShapeFactory } = require("../../dist/domain/ShapeFactory.js");
 const { NodeDirectoryAdapter } = require("../../dist/infrastructure/NodeDirectoryAdapter.js");
 
 module.exports = function createDispatcher(session) {
   const host = new PluginHost({ editor: session, directory: new NodeDirectoryAdapter() });
-  const builtins = new BuiltinCommands(session);
+  const shapes = new BuiltinShapes();
+  host.activate(shapes.manifest, shapes);
+  const builtins = new BuiltinCommands(session, new ShapeFactory(host.shapes));
   host.activate(builtins.manifest, builtins);
   return new CommandDispatcher(session, host.commands);
 };

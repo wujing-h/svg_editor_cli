@@ -1,7 +1,8 @@
 // 用途：验证六种图形的集中创建、输入校验、可选样式和文本保留。
 const assert = require("node:assert/strict");
 const test = require("node:test");
-const { ShapeFactory } = require("../dist/domain/ShapeFactory.js");
+const { createShapeFactory } = require("./helpers/shapes.cjs");
+
 
 const examples = [
   { kind: "rect", params: ["1", "2", "3", "4", "#abc"], attributes: { x: 1, y: 2, width: 3, height: 4, fill: "#abc" } },
@@ -14,7 +15,7 @@ const examples = [
 
 for (const example of examples) {
   test(`factory creates ${example.kind} consistently from parameters and attributes`, () => {
-    const factory = new ShapeFactory();
+    const factory = createShapeFactory();
     const shape = factory.createFromParameters(example.kind, "s1", example.params);
     assert.equal(shape.kind, example.kind);
     assert.equal(shape.id, "s1");
@@ -26,7 +27,7 @@ for (const example of examples) {
 }
 
 test("omitted paints remain absent and text accepts an explicitly empty content argument", () => {
-  const factory = new ShapeFactory();
+  const factory = createShapeFactory();
   const inputs = [
     ["rect", ["1", "2", "3", "4"]], ["circle", ["1", "2", "3"]],
     ["ellipse", ["1", "2", "3", "4"]], ["line", ["1", "2", "3", "4"]],
@@ -42,7 +43,7 @@ test("omitted paints remain absent and text accepts an explicitly empty content 
 });
 
 test("factory rejects unsupported types and missing or surplus positional arguments", () => {
-  const factory = new ShapeFactory();
+  const factory = createShapeFactory();
   for (const kind of ["hexagon", "box", "Rect"]) {
     assert.throws(() => factory.create(kind, "s1"), new RegExp(`unknown shape type: ${kind}`));
     assert.throws(() => factory.createFromParameters(kind, "s1", []), /unknown shape type/);
@@ -56,7 +57,7 @@ test("factory rejects unsupported types and missing or surplus positional argume
 });
 
 test("factory validates decimal numbers, geometry ranges, attributes, and initial stroke width", () => {
-  const factory = new ShapeFactory();
+  const factory = createShapeFactory();
   for (const invalid of ["", " ", "NaN", "Infinity", "1e309", "12px", "0x10"]) {
     assert.throws(() => factory.createFromParameters("rect", "r1", [invalid, "2", "3", "4"]), /invalid number/);
   }

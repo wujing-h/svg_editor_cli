@@ -1,17 +1,18 @@
 // 用途：验证限定 SVG 读取、命名空间、缺 id 分配、严格错误与保存读回。
 const assert = require("node:assert/strict");
 const test = require("node:test");
-const { SvgReader } = require("../dist/infrastructure/SvgReader.js");
+const { createShapeFactory, createSvgReader } = require("./helpers/shapes.cjs");
+
 const { SvgWriter } = require("../dist/infrastructure/SvgWriter.js");
 const { SvgDocument } = require("../dist/domain/SvgDocument.js");
-const { ShapeFactory } = require("../dist/domain/ShapeFactory.js");
+
 
 const svg = (children, attributes = 'width="400" height="300"') => `<svg xmlns="http://www.w3.org/2000/svg" ${attributes}>${children}</svg>`;
 const describe = (document) => document.getRootShapes().map((shape) => shape.describe());
 
 test("reader reserves future explicit IDs and assigns deterministic case-sensitive IDs in tree order", () => {
   const input = svg('<rect width="10" height="20"/><rect id="rect1"/><g><circle id="circle1" r="3"/><circle r="4"/><text>hello</text></g><rect id="Rect1"/><g id="g1"/>');
-  const loaded = new SvgReader().parse(input);
+  const loaded = createSvgReader().parse(input);
   assert.equal(loaded.elementCount, 8);
   assert.deepEqual(loaded.warnings, [
     { kind: "rect", id: "rect2" }, { kind: "g", id: "g2" },
@@ -25,7 +26,7 @@ test("reader reserves future explicit IDs and assigns deterministic case-sensiti
 });
 
 test("reader accepts prefixed and unqualified SVG and preserves group-inherited text presentation", () => {
-  const loaded = new SvgReader().parse('<s:svg xmlns:s="http://www.w3.org/2000/svg" width="400px" height="300"><s:g id="scene" font-size="16px" text-anchor="middle"><s:text id="title" x="10px" y="20">  中文 &amp; <![CDATA[<label>]]>  </s:text></s:g></s:svg>');
+  const loaded = createSvgReader().parse('<s:svg xmlns:s="http://www.w3.org/2000/svg" width="400px" height="300"><s:g id="scene" font-size="16px" text-anchor="middle"><s:text id="title" x="10px" y="20">  中文 &amp; <![CDATA[<label>]]>  </s:text></s:g></s:svg>');
   assert.deepEqual(loaded.document.getCanvasSize(), { width: 400, height: 300 });
   assert.deepEqual(loaded.document.findShape("scene").describe().attributes, { "font-size": "16px", "text-anchor": "middle" });
   const text = loaded.document.findShape("title");
@@ -33,11 +34,11 @@ test("reader accepts prefixed and unqualified SVG and preserves group-inherited 
   assert.deepEqual(text.describe().attributes, { x: 10, y: 20 });
   assert.throws(() => text.setAttribute("font-size", "20"), /unknown attribute: font-size/);
   assert.throws(() => loaded.document.findShape("scene").setAttribute("text-anchor", "end"), /unknown attribute: text-anchor/);
-  assert.equal(new SvgReader().parse('<svg width="1" height="2"><g id="plain"/></svg>').document.findShape("plain").kind, "g");
+  assert.equal(createSvgReader().parse('<svg width="1" height="2"><g id="plain"/></svg>').document.findShape("plain").kind, "g");
 });
 
 test("reader supports matching or dimension-only viewBox and normalizes SVG geometry defaults and px lengths", () => {
-  const loaded = new SvgReader().parse(svg('<circle id="c" r="2px"/><ellipse id="e" ry="3px"/><line id="l" stroke-width="2px"/><text id="t"/>', 'viewBox="0,0,400,300"'));
+  const loaded = createSvgReader().parse(svg('<circle id="c" r="2px"/><ellipse id="e" ry="3px"/><line id="l" stroke-width="2px"/><text id="t"/>', 'viewBox="0,0,400,300"'));
   assert.deepEqual(loaded.document.getCanvasSize(), { width: 400, height: 300 });
   assert.deepEqual(loaded.document.findShape("c").describe().attributes, { cx: 0, cy: 0, r: 2 });
   assert.deepEqual(loaded.document.findShape("e").describe().attributes, { cx: 0, cy: 0, rx: 3, ry: 3 });
@@ -46,7 +47,7 @@ test("reader supports matching or dimension-only viewBox and normalizes SVG geom
 });
 
 test("writer-reader round trip preserves all six types, order, explicit styles, Unicode, and exact whitespace", () => {
-  const factory = new ShapeFactory();
+  const factory = createShapeFactory();
   const document = new SvgDocument(400, 300);
   document.insert(factory.create("g", "scene", { fill: "blue", "font-size": "16", "text-anchor": "middle" }));
   for (const [kind, id, attributes, content] of [
@@ -61,7 +62,7 @@ test("writer-reader round trip preserves all six types, order, explicit styles, 
   }
   const writer = new SvgWriter();
   const serialized = writer.serialize(document);
-  const loaded = new SvgReader().parse(serialized.content);
+  const loaded = createSvgReader().parse(serialized.content);
   assert.equal(loaded.elementCount, serialized.elementCount);
   assert.deepEqual(loaded.warnings, []);
   assert.deepEqual(describe(loaded.document), describe(document));
@@ -75,7 +76,7 @@ test("reader rejects malformed XML and illegal raw or referenced characters inst
     svg("<text>\u0000</text>"), svg("<text>&#0;</text>"), svg('<text id="&#xD800;"/>'),
     '<svg width="1" height="1"/><svg width="2" height="2"/>',
   ]) {
-    assert.throws(() => new SvgReader().parse(input), undefined, input);
+    assert.throws(() => createSvgReader().parse(input), undefined, input);
   }
 });
 
@@ -89,7 +90,7 @@ test("reader rejects duplicate IDs, unsupported elements, attributes, children, 
     `<?xml-stylesheet href="other.css"?>${svg("")}`, `<!DOCTYPE svg>${svg("")}`,
     svg("", 'width="1" height="1" onclick="alert(1)"'), svg('<circle r="10%"/>'),
   ]) {
-    assert.throws(() => new SvgReader().parse(input), undefined, input);
+    assert.throws(() => createSvgReader().parse(input), undefined, input);
   }
 });
 
@@ -100,12 +101,12 @@ test("reader rejects unsupported coordinate systems, invalid canvas and negative
     svg("", 'width="0" height="1"'), svg("", ""), svg('<rect width="-1"/>'),
     svg('<circle r="NaN"/>'), svg('<text font-size=""/>'), svg('<text text-anchor="invalid"/>'),
   ]) {
-    assert.throws(() => new SvgReader().parse(input), undefined, input);
+    assert.throws(() => createSvgReader().parse(input), undefined, input);
   }
 });
 
 test("reader can be reused after failure and never returns accumulated warnings from older reads", () => {
-  const reader = new SvgReader();
+  const reader = createSvgReader();
   assert.throws(() => reader.parse(svg('<rect/><path/>')));
   const loaded = reader.parse(svg('<rect id=""/><g/>'));
   assert.deepEqual(loaded.warnings, [{ kind: "rect", id: "rect1" }, { kind: "g", id: "g1" }]);

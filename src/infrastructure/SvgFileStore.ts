@@ -5,14 +5,14 @@ import { basename, dirname, join, resolve } from "node:path";
 import type { DocumentStore } from "../application/contracts/DocumentStore.js";
 import type { DocumentReadResult } from "../application/contracts/DocumentReadResult.js";
 import type { SvgDocument } from "../domain/SvgDocument.js";
-import { SvgWriter } from "./SvgWriter.js";
-import { SvgReader } from "./SvgReader.js";
+import type { SvgWriter } from "./SvgWriter.js";
+import type { SvgReader } from "./SvgReader.js";
 
 export class SvgFileStore implements DocumentStore {
   private readonly writer: SvgWriter;
   private readonly reader: SvgReader;
 
-  constructor(writer: SvgWriter = new SvgWriter(), reader: SvgReader = new SvgReader()) {
+  constructor(writer: SvgWriter, reader: SvgReader) {
     this.writer = writer;
     this.reader = reader;
   }

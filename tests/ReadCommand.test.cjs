@@ -4,16 +4,17 @@ const { spawnSync } = require("node:child_process");
 const fs = require("node:fs/promises");
 const path = require("node:path");
 const test = require("node:test");
+const { createSvgReader, createSvgFileStore } = require("./helpers/shapes.cjs");
 const createDispatcher = require("./helpers/createDispatcher.cjs");
 const { EditorSession } = require("../dist/application/EditorSession.js");
 const { CommandLineParser } = require("../dist/cli/CommandLineParser.js");
 const { CliFormatter } = require("../dist/cli/CliFormatter.js");
-const { SvgFileStore } = require("../dist/infrastructure/SvgFileStore.js");
-const { SvgReader } = require("../dist/infrastructure/SvgReader.js");
+
+
 
 const svg = (children) => `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300">${children}</svg>`;
 
-function editor(store = new SvgFileStore()) {
+function editor(store = createSvgFileStore()) {
   const session = new EditorSession(store);
   const dispatcher = createDispatcher(session);
   const parser = new CommandLineParser();
@@ -159,7 +160,7 @@ test("file reader rejects invalid UTF-8, directories, and empty files without cr
 
 test("session replaces its document only after asynchronous reading completes", async () => {
   let complete;
-  const loaded = new SvgReader().parse(svg('<circle id="imported" r="3"/>'));
+  const loaded = createSvgReader().parse(svg('<circle id="imported" r="3"/>'));
   const app = editor({ read: () => new Promise((resolve) => { complete = resolve; }), save: async () => 0 });
   await app.run("init");
   await app.run("create circle old 1 2 3");
@@ -192,6 +193,6 @@ test("CLI completes the assignment's imported SVG session, warning once and pres
   assert.match(result.stdout, /saved to demo.svg \(7 elements\)\nread demo.svg \(7 elements\)/);
   assert.equal((result.stdout.match(/^warning:/gm) ?? []).length, 1);
   const content = await fs.readFile(path.join(directory, "demo.svg"), "utf8");
-  assert.equal(new SvgReader().parse(content).elementCount, 7);
+  assert.equal(createSvgReader().parse(content).elementCount, 7);
   assert.equal(await fs.readFile(path.join(directory, "other.svg"), "utf8"), source);
 });

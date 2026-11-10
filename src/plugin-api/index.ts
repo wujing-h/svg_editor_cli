@@ -8,7 +8,7 @@ export type { CommandDefinition } from "../application/contracts/CommandDefiniti
 export type { CommandResult } from "../application/contracts/CommandResult.js";
 export type { CommandToken } from "../application/contracts/CommandToken.js";
 export type { DirectoryReader, DirectoryEntry } from "../application/contracts/DirectoryReader.js";
-export type { ShapeProvider, SvgShapeInput } from "../application/contracts/ShapeProvider.js";
+export type { ShapeProvider, ShapeAttributes, SvgShapeInput } from "../domain/ShapeProvider.js";
 export type { TreeDecorator, TreeLineContext } from "../application/contracts/TreeDecorator.js";
 export type { AttributeHandler, AttributeContext } from "../application/contracts/AttributeHandler.js";
 export type { ShapeDescription } from "../domain/ShapeDescription.js";

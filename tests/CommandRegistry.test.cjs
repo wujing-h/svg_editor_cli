@@ -9,6 +9,7 @@ const { BuiltinCommands } = require("../dist/builtins/BuiltinCommands.js");
 const { MoveCommand } = require("../dist/builtins/commands/MoveCommand.js");
 const { CliFormatter } = require("../dist/cli/CliFormatter.js");
 const { CommandLineParser } = require("../dist/cli/CommandLineParser.js");
+const { createShapeFactory } = require("./helpers/shapes.cjs");
 
 const definition = (name, create = () => ({ execute: () => ({ lines: [name] }) })) => ({
   name, syntax: name, description: "test command", create,
@@ -68,7 +69,7 @@ test("a factory without an executable command is rejected", () => {
 test("builtins retain help order and a newly registered command appears without changing HelpCommand", async () => {
   const session = new EditorSession();
   const host = new PluginHost({ editor: session, directory: {} });
-  const builtins = new BuiltinCommands(session);
+  const builtins = new BuiltinCommands(session, createShapeFactory());
   host.activate(builtins.manifest, builtins);
   const dispatcher = new CommandDispatcher(session, host.commands);
   const parser = new CommandLineParser();

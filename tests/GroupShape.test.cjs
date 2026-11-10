@@ -1,11 +1,12 @@
 // 用途：验证嵌套容器的统一几何操作、整组失败原子性及局部恢复。
 const assert = require("node:assert/strict");
 const test = require("node:test");
+const { createShapeFactory } = require("./helpers/shapes.cjs");
 const { SvgDocument } = require("../dist/domain/SvgDocument.js");
 const { GroupShape } = require("../dist/domain/GroupShape.js");
 const { RectShape } = require("../dist/domain/RectShape.js");
 const { GeometrySnapshot } = require("../dist/domain/GeometrySnapshot.js");
-const { ShapeFactory } = require("../dist/domain/ShapeFactory.js");
+
 
 test("nested groups delegate movement, scaling, and exact restoration through Shape operations", () => {
   const document = new SvgDocument(800, 600);
@@ -108,7 +109,7 @@ test("geometry restoration rejects changed membership, order, and same-id replac
 
 test("mixed groups preserve leaf styles and text while recursively moving, scaling, and restoring", () => {
   const document = new SvgDocument(800, 600);
-  const factory = new ShapeFactory();
+  const factory = createShapeFactory();
   const group = factory.create("g", "scene", { fill: "red" });
   document.insert(group);
   document.insert(factory.create("g", "nested"), "scene");

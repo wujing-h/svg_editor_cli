@@ -1,11 +1,12 @@
 // 用途：验证 set 的 CLI 语义、属性缺失恢复、容器样式和编辑历史原子性。
 const assert = require("node:assert/strict");
 const test = require("node:test");
+const { createShapeFactory } = require("./helpers/shapes.cjs");
 const createDispatcher = require("./helpers/createDispatcher.cjs");
 const { EditorSession } = require("../dist/application/EditorSession.js");
 const { CommandLineParser } = require("../dist/cli/CommandLineParser.js");
 const { CliFormatter } = require("../dist/cli/CliFormatter.js");
-const { ShapeFactory } = require("../dist/domain/ShapeFactory.js");
+
 
 function editor() {
   const session = new EditorSession();
@@ -165,7 +166,7 @@ test("set restoration rejects same-id replacements and retains history for retry
   await app.run("set r1 fill red");
   const doc = app.session.requireDocument();
   const location = doc.remove("r1");
-  const replacement = new ShapeFactory().create("rect", "r1", { x: 10, y: 20, width: 30, height: 40 });
+  const replacement = createShapeFactory().create("rect", "r1", { x: 10, y: 20, width: 30, height: 40 });
   doc.insert(replacement);
   const before = app.describe();
   await assert.rejects(app.run("undo"), /set target is no longer in this document/);

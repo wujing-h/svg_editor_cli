@@ -10,7 +10,7 @@ class TestPlugin {
 }
 
 const command = (name) => ({ name, syntax: name, description: "probe", create: () => ({ execute: () => ({ lines: [name] }) }) });
-const shape = (name) => ({ name, createFromParameters: () => "created", createFromSvg: () => "restored" });
+const shape = (name) => ({ name, create: () => "created", createFromParameters: () => "created", createFromSvg: () => "restored" });
 const decorator = (name) => ({ name, order: 1, getSuffix: () => "tag" });
 const attribute = (name) => ({ name, handles: () => true, apply: (context) => context.setAttribute("r", "fill", "red") });
 const createHost = () => new PluginHost({ editor: new EditorSession(), directory: {} });

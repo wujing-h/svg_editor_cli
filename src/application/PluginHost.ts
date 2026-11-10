@@ -1,12 +1,12 @@
 // 用途：暂存并校验插件注册，成功后统一接入，失败时回滚本次扩展和资源。
 import { CommandRegistry } from "./CommandRegistry.js";
 import { ExtensionRegistry } from "./ExtensionRegistry.js";
+import { ShapeRegistry } from "./ShapeRegistry.js";
 import type { AttributeHandler } from "./contracts/AttributeHandler.js";
 import type { EditorServices } from "./contracts/EditorServices.js";
 import type { Plugin } from "./contracts/Plugin.js";
 import type { PluginContext, PluginDisposable } from "./contracts/PluginContext.js";
 import type { PluginManifest } from "./contracts/PluginManifest.js";
-import type { ShapeProvider } from "./contracts/ShapeProvider.js";
 import type { TreeDecorator } from "./contracts/TreeDecorator.js";
 
 interface Registration {
@@ -19,8 +19,7 @@ interface Registration {
 
 export class PluginHost implements PluginDisposable {
   readonly commands = new CommandRegistry();
-  readonly shapes = new ExtensionRegistry<ShapeProvider>("shapes", (entry) =>
-    typeof entry.createFromParameters === "function" && typeof entry.createFromSvg === "function");
+  readonly shapes: ShapeRegistry;
   readonly decorators = new ExtensionRegistry<TreeDecorator>("decorators", (entry) =>
     Number.isFinite(entry.order) && typeof entry.getSuffix === "function");
   readonly attributes = new ExtensionRegistry<AttributeHandler>("attributes", (entry) =>
@@ -29,8 +28,9 @@ export class PluginHost implements PluginDisposable {
   private readonly resources: PluginDisposable[] = [];
   private disposed = false;
 
-  constructor(services: EditorServices) {
+  constructor(services: EditorServices, shapes: ShapeRegistry = new ShapeRegistry()) {
     this.services = Object.freeze({ editor: services.editor, directory: services.directory });
+    this.shapes = shapes;
   }
 
   activate(manifest: PluginManifest, plugin: Plugin, options?: unknown): void {
@@ -38,8 +38,7 @@ export class PluginHost implements PluginDisposable {
       throw new Error("plugin host is disposed");
     }
     const pendingCommands = new CommandRegistry();
-    const pendingShapes = new ExtensionRegistry<ShapeProvider>("shapes", (entry) =>
-      typeof entry.createFromParameters === "function" && typeof entry.createFromSvg === "function");
+    const pendingShapes = new ShapeRegistry();
     const pendingDecorators = new ExtensionRegistry<TreeDecorator>("decorators", (entry) =>
       Number.isFinite(entry.order) && typeof entry.getSuffix === "function");
     const pendingAttributes = new ExtensionRegistry<AttributeHandler>("attributes", (entry) =>

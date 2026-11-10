@@ -1,11 +1,12 @@
 // 用途：验证分组与解组的顺序、局部恢复、失败原子性和混合编辑历史。
 const assert = require("node:assert/strict");
 const test = require("node:test");
+const { createShapeFactory } = require("./helpers/shapes.cjs");
 const createDispatcher = require("./helpers/createDispatcher.cjs");
 const { EditorSession } = require("../dist/application/EditorSession.js");
 const { CommandLineParser } = require("../dist/cli/CommandLineParser.js");
 const { CliFormatter } = require("../dist/cli/CliFormatter.js");
-const { ShapeFactory } = require("../dist/domain/ShapeFactory.js");
+
 const { SvgDocument } = require("../dist/domain/SvgDocument.js");
 
 function editor() {
@@ -246,7 +247,7 @@ test("failed grouping undo validates every affected parent before writing and ca
   await runAll(app, ["init", "create g scene", "create g left in scene", "create g right in scene", "create circle a 1 2 3 in left", "create circle b 4 5 6 in right", "group pack a b"]);
   const doc = app.session.requireDocument();
   const right = doc.remove("right");
-  doc.insert(new ShapeFactory().create("g", "right"), "scene", right.index);
+  doc.insert(createShapeFactory().create("g", "right"), "scene", right.index);
   const before = app.describe();
   // 父列表中包含同名替代对象也应拒绝；不限定身份或列表校验的先后次序。
   await assert.rejects(app.run("undo"));
@@ -255,7 +256,7 @@ test("failed grouping undo validates every affected parent before writing and ca
   doc.restore(right);
   await app.run("undo");
   assert.equal(doc.findShape("b").parent, right.shape);
-  const conflicting = new ShapeFactory().create("g", "pack");
+  const conflicting = createShapeFactory().create("g", "pack");
   doc.insert(conflicting);
   const beforeRedo = app.describe();
   await assert.rejects(app.run("redo"), /id already exists: pack/);
@@ -269,7 +270,7 @@ test("grouping restore rejects foreign records and changed lists without partial
   const app = editor();
   await runAll(app, ["init", "create g scene", "create circle a 1 2 3 in scene", "create circle b 4 5 6 in scene"]);
   const doc = app.session.requireDocument();
-  const factory = new ShapeFactory();
+  const factory = createShapeFactory();
   const change = doc.group(factory.create("g", "pack"), ["a", "b"]);
   assert.throws(() => new SvgDocument(100, 100).restoreGrouping(change, false), /belongs to another document/);
   // 外部移动改变了记录中的成员顺序，拒绝恢复而不覆盖这个变化。

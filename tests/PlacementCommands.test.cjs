@@ -1,11 +1,12 @@
 // 用途：验证换父、同级换位及局部位置恢复，覆盖循环拒绝和历史原子性。
 const assert = require("node:assert/strict");
 const test = require("node:test");
+const { createShapeFactory } = require("./helpers/shapes.cjs");
 const createDispatcher = require("./helpers/createDispatcher.cjs");
 const { EditorSession } = require("../dist/application/EditorSession.js");
 const { CommandLineParser } = require("../dist/cli/CommandLineParser.js");
 const { CliFormatter } = require("../dist/cli/CliFormatter.js");
-const { ShapeFactory } = require("../dist/domain/ShapeFactory.js");
+
 const { SvgDocument } = require("../dist/domain/SvgDocument.js");
 
 function editor() {
@@ -216,14 +217,14 @@ test("placement restore rejects foreign records, invalid positions, leaves, and 
     assert.deepEqual(app.describe(), before);
   }
   const originalParent = doc.remove("left");
-  doc.insert(new ShapeFactory().create("g", "left"));
+  doc.insert(createShapeFactory().create("g", "left"));
   const replacedParent = app.describe();
   assert.throws(() => doc.restorePlacement(change.before), /original container is not in this document: left/);
   assert.deepEqual(app.describe(), replacedParent);
   doc.remove("left");
   doc.restore(originalParent);
   const originalShape = doc.remove("c1");
-  doc.insert(new ShapeFactory().create("circle", "c1", { cx: 10, cy: 20, r: 30 }), "right");
+  doc.insert(createShapeFactory().create("circle", "c1", { cx: 10, cy: 20, r: 30 }), "right");
   const replacedShape = app.describe();
   assert.throws(() => doc.restorePlacement(change.before), /original shape is not in this document: c1/);
   assert.deepEqual(app.describe(), replacedShape);
@@ -256,7 +257,7 @@ test("failed placement undo retains its history entry and succeeds after the ori
   await app.run("addto right c1");
   const doc = app.session.requireDocument();
   const originalParent = doc.remove("left");
-  doc.insert(new ShapeFactory().create("g", "left"));
+  doc.insert(createShapeFactory().create("g", "left"));
   const before = app.describe();
   await assert.rejects(app.run("undo"), /original container is not in this document: left/);
   assert.deepEqual(app.describe(), before);
