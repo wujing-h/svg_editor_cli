@@ -1,7 +1,8 @@
 // 用途：组装 VSCode 扩展功能，将提供者注册给宿主并管理资源释放。
-import { FileType, window, workspace } from "vscode";
+import { FileType, languages, window, workspace } from "vscode";
 import type { ExtensionContext } from "vscode";
 import { SvgFileDecorationProvider } from "./SvgFileDecorationProvider.js";
+import { SvgDocumentSymbolProvider } from "./SvgDocumentSymbolProvider.js";
 
 export function activate(context: ExtensionContext): void {
   const output = window.createOutputChannel("SVG Course Tools");
@@ -13,5 +14,9 @@ export function activate(context: ExtensionContext): void {
     return (stat.type & FileType.File) !== 0;
   });
   context.subscriptions.push(window.registerFileDecorationProvider(decorations));
+  context.subscriptions.push(languages.registerDocumentSymbolProvider(
+    // 不绑定单一 language id，兼容被识别为 XML 或 SVG 的文本文件及大写后缀。
+    [{ pattern: "**/*.[sS][vV][gG]" }], new SvgDocumentSymbolProvider(), { label: "SVG Course Tools" },
+  ));
   output.appendLine("SVG Course Tools activated.");
 }
