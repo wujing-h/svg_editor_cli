@@ -1,6 +1,7 @@
 // 用途：封装有序容器，通过多态递归操作子图形并保证整组几何修改原子性。
 import { GeometrySnapshot } from "./GeometrySnapshot.js";
 import { Shape } from "./Shape.js";
+import { ShapeTree } from "./ShapeTree.js";
 import type { ShapeDescription } from "./ShapeDescription.js";
 import type { ShapeStyles } from "./ShapeStyles.js";
 import { treeMutationToken } from "./internal/TreeMutationToken.js";
@@ -9,8 +10,30 @@ export class GroupShape extends Shape {
   override readonly kind = "g";
   private childShapes: Shape[] = [];
 
-  constructor(id: string, styles: ShapeStyles = {}) {
+  constructor(id: string, styles: ShapeStyles = {}, children: readonly Shape[] = []) {
     super(id, styles);
+    const ids = new Set<string>([id]);
+    for (const child of children) {
+      if (child.parent !== undefined) {
+        throw new Error(`shape already has a parent: ${child.id}`);
+      }
+      for (const node of ShapeTree.collect(child)) {
+        if (ids.has(node.id)) {
+          throw new Error(`id already exists: ${node.id}`);
+        }
+        if (node.document !== undefined) {
+          throw new Error(`shape already belongs to a document: ${node.id}`);
+        }
+        ids.add(node.id);
+      }
+    }
+    // 全部检查通过才认领子节点；后一个节点非法时，前面的节点仍保持游离。
+    this.childShapes = [...children];
+    for (const child of this.childShapes) {
+      child.setTreeContext(treeMutationToken, this, undefined);
+    }
+    // 不在基类构造中调用自身的多态校验：此时子类字段尚未初始化。
+    // 完整对象由 ShapeFactory / SvgDocument 在接入前调用 validateChildren。
   }
 
   override get children(): readonly Shape[] {
@@ -20,6 +43,12 @@ export class GroupShape extends Shape {
   override isContainer(): this is GroupShape {
     return true;
   }
+
+  // 纯校验钩子：子类可要求必要部件保留；不得在这里修改候选列表或图形。
+  validateChildren(_children: readonly Shape[]): void {}
+
+  // 普通组允许解组；复合容器可覆盖并抛错，保护整体语义。
+  assertCanUngroup(): void {}
 
   override move(dx: number, dy: number): void {
     this.validateMoveResult(dx, dy);

@@ -4,6 +4,7 @@ import type { GroupShape } from "./GroupShape.js";
 import { GroupingChange } from "./GroupingChange.js";
 import type { SiblingOrder } from "./SiblingOrder.js";
 import type { Shape } from "./Shape.js";
+import { ShapeTree } from "./ShapeTree.js";
 import type { PlacementChange } from "./PlacementChange.js";
 import type { SubtreeLocation } from "./SubtreeLocation.js";
 import { treeMutationToken } from "./internal/TreeMutationToken.js";
@@ -73,6 +74,7 @@ export class SvgDocument {
     const location: SubtreeLocation = { document: this, shape, parent, index };
 
     const remaining = siblings.filter((sibling) => sibling !== shape);
+    parent?.validateChildren(remaining);
     this.replaceSiblings(parent, remaining);
     // 只清除摘下根的外部父引用；子树内部父子关系保留以供恢复。
     for (const node of nodes) {
@@ -170,6 +172,7 @@ export class SvgDocument {
 
   ungroup(id: string): GroupingChange {
     const group = this.findContainer(id);
+    group.assertCanUngroup();
     const parent = group.parent;
     if (parent === undefined) {
       throw new Error(`cannot ungroup top-level container: ${id}`);
@@ -196,6 +199,10 @@ export class SvgDocument {
     const target = change.getOrders(this, after);
     const group = change.group;
     const present = change.isGroupPresent(after);
+    if (!present) {
+      // 撤销分组也会拆散组，必须与显式 ungroup 走同一能力检查。
+      group.assertCanUngroup();
+    }
     if (change.isGroupPresent(!after)) {
       this.requireActiveShape(group);
     } else {
@@ -269,6 +276,10 @@ export class SvgDocument {
       }
     }
 
+    // 先校验所有父容器的最终列表，不能写入第一个容器后才发现第二个拒绝。
+    for (const order of target) {
+      order.parent?.validateChildren(order.children);
+    }
     // 校验完成后一次应用局部计划；成员子孙和几何不变，仅切换组的活动索引。
     for (const order of target) {
       this.replaceSiblings(order.parent, order.children);
@@ -352,6 +363,10 @@ export class SvgDocument {
 
     // 所有校验和列表计算完成后才写入；子孙归属、几何和 id 索引保持原样。
     if (parent !== oldParent) {
+      oldParent?.validateChildren(remaining);
+    }
+    parent?.validateChildren(updated);
+    if (parent !== oldParent) {
       this.replaceSiblings(oldParent, remaining);
     }
     this.replaceSiblings(parent, updated);
@@ -388,6 +403,7 @@ export class SvgDocument {
     // 整棵子树与插入位置验证完成后，同步写入列表、父引用、归属与索引。
     const updated = [...siblings];
     updated.splice(position, 0, shape);
+    parent?.validateChildren(updated);
     this.replaceSiblings(parent, updated);
     for (const node of nodes) {
       // 内部父子关系保留，外部父引用更新为新父对象或 undefined。
@@ -405,32 +421,7 @@ export class SvgDocument {
   }
 
   private collectSubtree(root: Shape): readonly Shape[] {
-    const nodes: Shape[] = [];
-    const seen = new Set<Shape>();
-    const ids = new Set<string>();
-    const visit = (shape: Shape): void => {
-      if (seen.has(shape)) {
-        throw new Error("shape tree contains a cycle or repeated node");
-      }
-      if (ids.has(shape.id)) {
-        throw new Error(`id already exists: ${shape.id}`);
-      }
-      seen.add(shape);
-      ids.add(shape.id);
-      nodes.push(shape);
-      const children = shape.children;
-      if (children.length !== 0 && !shape.isContainer()) {
-        throw new Error(`not a container: ${shape.id}`);
-      }
-      for (const child of children) {
-        if (child.parent !== shape) {
-          throw new Error("inconsistent parent and child references");
-        }
-        visit(child);
-      }
-    };
-    visit(root);
-    return nodes;
+    return ShapeTree.collect(root);
   }
 
   private static validateSize(width: number, height: number): void {

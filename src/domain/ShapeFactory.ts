@@ -1,5 +1,6 @@
 // 用途：通过注入的提供者查询接口创建图形，不预置任何图形类型或参数分支。
 import { Shape } from "./Shape.js";
+import { ShapeTree } from "./ShapeTree.js";
 import type { ShapeAttributes, ShapeProvider, ShapeProviderLookup } from "./ShapeProvider.js";
 
 export class ShapeFactory {
@@ -33,6 +34,11 @@ export class ShapeFactory {
     // 提供者必须返回当前请求的新根对象，不能冒用其他 id 或活动文档里的节点。
     if (!(shape instanceof Shape) || shape.id !== id || shape.parent !== undefined || shape.document !== undefined) {
       throw new Error(`invalid shape implementation: ${kind}`);
+    }
+    for (const node of ShapeTree.collect(shape)) {
+      if (node.document !== undefined) {
+        throw new Error(`invalid shape implementation: ${kind}`);
+      }
     }
     return shape;
   }
