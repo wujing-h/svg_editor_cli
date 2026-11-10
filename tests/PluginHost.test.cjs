@@ -41,6 +41,15 @@ test("missing declarations and empty plugin sets have empty default behavior", (
   for (const registry of [host.commands, host.shapes, host.decorators, host.attributes]) assert.deepEqual(registry.getAll(), []);
 });
 
+test("raw manifest values cannot use null, arrays or non-array name lists as empty declarations", () => {
+  for (const contributes of [null, [], "invalid", { commands: null }, { shapes: "rect" }, { attributes: [42] }]) {
+    const host = createHost();
+    assert.throws(() => host.activate({ name: "bad-json", contributes }, new TestPlugin(() => {})),
+      /plugin failed to activate: bad-json \(invalid contributes declaration\)/);
+    for (const registry of [host.commands, host.shapes, host.decorators, host.attributes]) assert.deepEqual(registry.getAll(), []);
+  }
+});
+
 test("activation failure rolls back all four categories and releases resources in reverse order", () => {
   const host = createHost();
   const released = [];

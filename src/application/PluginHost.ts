@@ -147,12 +147,18 @@ export class PluginHost implements PluginDisposable {
   }
 
   private validateManifest(manifest: PluginManifest, registrations: readonly Registration[]): void {
+    // 配置加载会带来未经过 TS 检查的 JSON；null / 数组不能冒充缺省声明。
+    if (manifest.contributes !== undefined && (manifest.contributes === null ||
+      typeof manifest.contributes !== "object" || Array.isArray(manifest.contributes))) {
+      throw new Error("invalid contributes declaration");
+    }
     const categories = ["shapes", "commands", "decorators", "attributes"] as const;
     const declared: string[] = [];
     const registered: string[] = [];
     let matches = Object.keys(manifest.contributes ?? {}).every((key) => categories.some((category) => category === key));
     for (const category of categories) {
-      const names = manifest.contributes?.[category] ?? [];
+      const declaredNames = manifest.contributes?.[category];
+      const names = declaredNames === undefined ? [] : declaredNames;
       const actual = registrations.filter((entry) => entry.category === category).map((entry) => entry.name).sort();
       if (!Array.isArray(names) || names.some((name) => typeof name !== "string")) {
         throw new Error("invalid contributes declaration");
