@@ -1,0 +1,4 @@
+<!-- 用途：故意缺少闭合标签，模拟用户正在编辑的不完整 XML；预期大纲暂时清空。 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="200">
+  <g id="editing">
+    <rect id="unfinished" x="20" y="20" width="120"

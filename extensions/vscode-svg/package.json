@@ -1,0 +1,28 @@
+{
+  "name": "svg-course-tools",
+  "displayName": "SVG Course Tools",
+  "description": "SVG file decorations and native document outlines for the software design course.",
+  "version": "0.1.0",
+  "private": true,
+  "license": "ISC",
+  "engines": {
+    "vscode": "^1.100.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./dist/extension.js",
+  "scripts": {
+    "check": "tsc --noEmit",
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "test": "npm run build && node --test"
+  },
+  "devDependencies": {
+    "@types/vscode": "1.100.0",
+    "typescript": "7.0.2"
+  }
+}

@@ -1,0 +1,16 @@
+// 用途：为 F5 调试提供一次性 TypeScript 构建任务。
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build SVG extension",
+      "type": "npm",
+      "script": "build",
+      "problemMatcher": "$tsc",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
+}

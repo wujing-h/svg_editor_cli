@@ -1,0 +1,7 @@
+<!-- 用途：确认大纲可显示没有 id 的根、容器和叶子，而不自动改写 SVG。 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="200">
+  <g>
+    <circle cx="50" cy="50" r="20"/>
+    <text x="80" y="55">没有 id 的文字</text>
+  </g>
+</svg>

@@ -1,0 +1,1 @@
+This directory ends in .svg but must not receive an SVG badge.
