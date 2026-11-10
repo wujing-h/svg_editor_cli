@@ -1,0 +1,5 @@
+// 用途：单独输出公开 API 及依赖的声明，CLI 后续仅输出 JS，避免跨包声明读写冲突。
+{
+  "extends": "./tsconfig.json",
+  "include": ["src/plugin-api/index.ts"]
+}

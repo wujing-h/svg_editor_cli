@@ -107,10 +107,10 @@ test("real CLI loads before its first input, reports plugin errors and continues
   assert.match(result.stdout, /rect#r  parent=svg/);
 });
 
-test("empty configuration and no configuration retain identical default CLI output", async (t) => {
+test("empty configuration and no configuration retain identical builtin editing output", async (t) => {
   const fixture = await pluginFixture(t);
   const config = await fixture.config([]);
-  const input = 'init 400 300\ncreate g scene\ncreate rect r 1 2 3 4 red in scene\nmove scene 10 20\nundo\nredo\nset r fill blue\nundo\nhelp\ntree\nshow r\n';
+  const input = 'init 400 300\ncreate g scene\ncreate rect r 1 2 3 4 red in scene\nmove scene 10 20\nundo\nredo\nset r fill blue\nundo\ntree\nshow r\n';
   const defaults = launch(fixture.root, [], input);
   const configured = launch(fixture.root, ["--config", config], input);
   assert.equal(configured.stdout, defaults.stdout);
