@@ -1,0 +1,20 @@
+// 用途：集中导出插件可依赖的契约和领域抽象，不暴露注册表内部或宿主装配。
+export type { Plugin } from "../application/contracts/Plugin.js";
+export type { PluginManifest } from "../application/contracts/PluginManifest.js";
+export type { PluginContext, PluginDisposable } from "../application/contracts/PluginContext.js";
+export type { EditorServices } from "../application/contracts/EditorServices.js";
+export type { Command } from "../application/contracts/Command.js";
+export type { CommandDefinition } from "../application/contracts/CommandDefinition.js";
+export type { CommandResult } from "../application/contracts/CommandResult.js";
+export type { CommandToken } from "../application/contracts/CommandToken.js";
+export type { DirectoryReader, DirectoryEntry } from "../application/contracts/DirectoryReader.js";
+export type { ShapeProvider, SvgShapeInput } from "../application/contracts/ShapeProvider.js";
+export type { TreeDecorator, TreeLineContext } from "../application/contracts/TreeDecorator.js";
+export type { AttributeHandler, AttributeContext } from "../application/contracts/AttributeHandler.js";
+export type { ShapeDescription } from "../domain/ShapeDescription.js";
+export type { ShapeStyles } from "../domain/ShapeStyles.js";
+export { EditCommand } from "../application/EditCommand.js";
+export { Shape } from "../domain/Shape.js";
+export { GroupShape } from "../domain/GroupShape.js";
+export { RectShape } from "../domain/RectShape.js";
+export { TextShape } from "../domain/TextShape.js";

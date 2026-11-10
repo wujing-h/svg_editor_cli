@@ -1,9 +1,9 @@
 // 用途：查询单个图形的属性与父容器，返回只读展示数据。
 import type { SvgDocument } from "../../domain/SvgDocument.js";
-import { CommandArguments } from "../CommandArguments.js";
-import type { Command } from "../contracts/Command.js";
-import type { CommandResult } from "../contracts/CommandResult.js";
-import type { CommandToken } from "../contracts/CommandToken.js";
+import { CommandArguments } from "../../application/CommandArguments.js";
+import type { Command } from "../../application/contracts/Command.js";
+import type { CommandResult } from "../../application/contracts/CommandResult.js";
+import type { CommandToken } from "../../application/contracts/CommandToken.js";
 
 export class ShowCommand implements Command {
   private readonly document: SvgDocument;

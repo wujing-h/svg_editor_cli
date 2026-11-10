@@ -1,7 +1,7 @@
 // 用途：验证创建、移动及历史的可观察行为，覆盖失败原子性与 IO 历史限制。
 const assert = require("node:assert/strict");
 const test = require("node:test");
-const { CommandDispatcher } = require("../dist/application/CommandDispatcher.js");
+const createDispatcher = require("./helpers/createDispatcher.cjs");
 const { EditorSession } = require("../dist/application/EditorSession.js");
 const { CommandLineParser } = require("../dist/cli/CommandLineParser.js");
 const { CliFormatter } = require("../dist/cli/CliFormatter.js");
@@ -9,7 +9,7 @@ const { CircleShape } = require("../dist/domain/CircleShape.js");
 
 function editor() {
   const session = new EditorSession();
-  const dispatcher = new CommandDispatcher(session);
+  const dispatcher = createDispatcher(session);
   const parser = new CommandLineParser();
   const formatter = new CliFormatter();
   return {

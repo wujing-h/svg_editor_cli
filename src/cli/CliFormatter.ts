@@ -5,6 +5,7 @@ import type { ShapeView } from "../application/contracts/ShapeView.js";
 export class CliFormatter {
   format(result: CommandResult): readonly string[] {
     const lines: string[] = [];
+    lines.push(...(result.lines ?? []));
 
     for (const warning of result.warnings ?? []) {
       lines.push(`warning: assigned id ${warning.id} to unnamed <${warning.kind}>`);

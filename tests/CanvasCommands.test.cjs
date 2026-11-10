@@ -1,13 +1,13 @@
 // 用途：验证画布命令的默认尺寸、参数解析以及失败时保留原状态。
 const assert = require("node:assert/strict");
 const test = require("node:test");
-const { CommandDispatcher } = require("../dist/application/CommandDispatcher.js");
+const createDispatcher = require("./helpers/createDispatcher.cjs");
 const { EditorSession } = require("../dist/application/EditorSession.js");
 const { CommandLineParser } = require("../dist/cli/CommandLineParser.js");
 
 test("init creates a default, partial, or fully specified canvas", async () => {
   const session = new EditorSession();
-  const dispatcher = new CommandDispatcher(session);
+  const dispatcher = createDispatcher(session);
   const parser = new CommandLineParser();
 
   const result = await dispatcher.dispatch(parser.parse("init"));
@@ -23,7 +23,7 @@ test("init creates a default, partial, or fully specified canvas", async () => {
 
 test("canvas requires a document and preserves height when only width is supplied", async () => {
   const session = new EditorSession();
-  const dispatcher = new CommandDispatcher(session);
+  const dispatcher = createDispatcher(session);
   const parser = new CommandLineParser();
 
   await assert.rejects(
@@ -46,7 +46,7 @@ test("canvas requires a document and preserves height when only width is supplie
 
 test("failed init and canvas leave the current canvas unchanged", async () => {
   const session = new EditorSession();
-  const dispatcher = new CommandDispatcher(session);
+  const dispatcher = createDispatcher(session);
   const parser = new CommandLineParser();
 
   await assert.rejects(dispatcher.dispatch(parser.parse("init 100 0")));

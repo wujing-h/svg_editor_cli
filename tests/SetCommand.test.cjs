@@ -1,7 +1,7 @@
 // 用途：验证 set 的 CLI 语义、属性缺失恢复、容器样式和编辑历史原子性。
 const assert = require("node:assert/strict");
 const test = require("node:test");
-const { CommandDispatcher } = require("../dist/application/CommandDispatcher.js");
+const createDispatcher = require("./helpers/createDispatcher.cjs");
 const { EditorSession } = require("../dist/application/EditorSession.js");
 const { CommandLineParser } = require("../dist/cli/CommandLineParser.js");
 const { CliFormatter } = require("../dist/cli/CliFormatter.js");
@@ -9,7 +9,7 @@ const { ShapeFactory } = require("../dist/domain/ShapeFactory.js");
 
 function editor() {
   const session = new EditorSession();
-  const dispatcher = new CommandDispatcher(session);
+  const dispatcher = createDispatcher(session);
   const parser = new CommandLineParser();
   const formatter = new CliFormatter();
   return {

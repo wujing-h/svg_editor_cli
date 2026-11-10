@@ -2,9 +2,9 @@
 import type { PlacementChange } from "../../domain/PlacementChange.js";
 import type { SubtreeLocation } from "../../domain/SubtreeLocation.js";
 import type { SvgDocument } from "../../domain/SvgDocument.js";
-import { PlacementCommand } from "../PlacementCommand.js";
-import type { CommandResult } from "../contracts/CommandResult.js";
-import type { CommandToken } from "../contracts/CommandToken.js";
+import { PlacementCommand } from "../../application/PlacementCommand.js";
+import type { CommandResult } from "../../application/contracts/CommandResult.js";
+import type { CommandToken } from "../../application/contracts/CommandToken.js";
 
 export class BackCommand extends PlacementCommand {
   constructor(document: SvgDocument, tokens: readonly CommandToken[]) {

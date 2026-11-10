@@ -1,7 +1,7 @@
 // 用途：验证分组与解组的顺序、局部恢复、失败原子性和混合编辑历史。
 const assert = require("node:assert/strict");
 const test = require("node:test");
-const { CommandDispatcher } = require("../dist/application/CommandDispatcher.js");
+const createDispatcher = require("./helpers/createDispatcher.cjs");
 const { EditorSession } = require("../dist/application/EditorSession.js");
 const { CommandLineParser } = require("../dist/cli/CommandLineParser.js");
 const { CliFormatter } = require("../dist/cli/CliFormatter.js");
@@ -10,7 +10,7 @@ const { SvgDocument } = require("../dist/domain/SvgDocument.js");
 
 function editor() {
   const session = new EditorSession();
-  const dispatcher = new CommandDispatcher(session);
+  const dispatcher = createDispatcher(session);
   const parser = new CommandLineParser();
   const formatter = new CliFormatter();
   return {

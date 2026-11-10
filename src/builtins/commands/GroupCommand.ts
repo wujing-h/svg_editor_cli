@@ -2,10 +2,10 @@
 import type { GroupingChange } from "../../domain/GroupingChange.js";
 import type { ShapeFactory } from "../../domain/ShapeFactory.js";
 import type { SvgDocument } from "../../domain/SvgDocument.js";
-import { CommandArguments } from "../CommandArguments.js";
-import { EditCommand } from "../EditCommand.js";
-import type { CommandResult } from "../contracts/CommandResult.js";
-import type { CommandToken } from "../contracts/CommandToken.js";
+import { CommandArguments } from "../../application/CommandArguments.js";
+import { EditCommand } from "../../application/EditCommand.js";
+import type { CommandResult } from "../../application/contracts/CommandResult.js";
+import type { CommandToken } from "../../application/contracts/CommandToken.js";
 
 export class GroupCommand extends EditCommand {
   private readonly document: SvgDocument;

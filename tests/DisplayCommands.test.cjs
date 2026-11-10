@@ -1,14 +1,14 @@
 // 用途：验证树形与属性查询的可观察输出，以及只读命令保持文档和历史。
 const assert = require("node:assert/strict");
 const test = require("node:test");
-const { CommandDispatcher } = require("../dist/application/CommandDispatcher.js");
+const createDispatcher = require("./helpers/createDispatcher.cjs");
 const { EditorSession } = require("../dist/application/EditorSession.js");
 const { CommandLineParser } = require("../dist/cli/CommandLineParser.js");
 const { CliFormatter } = require("../dist/cli/CliFormatter.js");
 
 function editor() {
   const session = new EditorSession();
-  const dispatcher = new CommandDispatcher(session);
+  const dispatcher = createDispatcher(session);
   const parser = new CommandLineParser();
   const formatter = new CliFormatter();
   const query = async (line) => dispatcher.dispatch(parser.parse(line));

@@ -1,10 +1,10 @@
 // 用途：解散非根级容器并提升子节点，保留原组对象和顺序以支持局部恢复。
 import type { GroupingChange } from "../../domain/GroupingChange.js";
 import type { SvgDocument } from "../../domain/SvgDocument.js";
-import { CommandArguments } from "../CommandArguments.js";
-import { EditCommand } from "../EditCommand.js";
-import type { CommandResult } from "../contracts/CommandResult.js";
-import type { CommandToken } from "../contracts/CommandToken.js";
+import { CommandArguments } from "../../application/CommandArguments.js";
+import { EditCommand } from "../../application/EditCommand.js";
+import type { CommandResult } from "../../application/contracts/CommandResult.js";
+import type { CommandToken } from "../../application/contracts/CommandToken.js";
 
 export class UngroupCommand extends EditCommand {
   private readonly document: SvgDocument;

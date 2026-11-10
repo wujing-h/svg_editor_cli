@@ -4,7 +4,7 @@ const { spawnSync } = require("node:child_process");
 const fs = require("node:fs/promises");
 const path = require("node:path");
 const test = require("node:test");
-const { CommandDispatcher } = require("../dist/application/CommandDispatcher.js");
+const createDispatcher = require("./helpers/createDispatcher.cjs");
 const { EditorSession } = require("../dist/application/EditorSession.js");
 const { CommandLineParser } = require("../dist/cli/CommandLineParser.js");
 const { CliFormatter } = require("../dist/cli/CliFormatter.js");
@@ -15,7 +15,7 @@ const svg = (children) => `<svg xmlns="http://www.w3.org/2000/svg" width="400" h
 
 function editor(store = new SvgFileStore()) {
   const session = new EditorSession(store);
-  const dispatcher = new CommandDispatcher(session);
+  const dispatcher = createDispatcher(session);
   const parser = new CommandLineParser();
   const formatter = new CliFormatter();
   return {

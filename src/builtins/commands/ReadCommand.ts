@@ -1,9 +1,9 @@
 // 用途：异步读入 SVG，返回成功摘要及缺 id 警告，历史与路径更新由会话决定。
-import { CommandArguments } from "../CommandArguments.js";
-import type { EditorSession } from "../EditorSession.js";
-import type { Command } from "../contracts/Command.js";
-import type { CommandResult } from "../contracts/CommandResult.js";
-import type { CommandToken } from "../contracts/CommandToken.js";
+import { CommandArguments } from "../../application/CommandArguments.js";
+import type { EditorSession } from "../../application/EditorSession.js";
+import type { Command } from "../../application/contracts/Command.js";
+import type { CommandResult } from "../../application/contracts/CommandResult.js";
+import type { CommandToken } from "../../application/contracts/CommandToken.js";
 
 export class ReadCommand implements Command {
   private readonly session: EditorSession;

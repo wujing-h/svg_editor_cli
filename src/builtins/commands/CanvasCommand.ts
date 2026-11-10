@@ -1,9 +1,9 @@
 // 用途：查询当前画布，或在完整校验后修改画布尺寸。
-import { CommandArguments } from "../CommandArguments.js";
-import { EditorSession } from "../EditorSession.js";
-import type { Command } from "../contracts/Command.js";
-import type { CommandResult } from "../contracts/CommandResult.js";
-import type { CommandToken } from "../contracts/CommandToken.js";
+import { CommandArguments } from "../../application/CommandArguments.js";
+import { EditorSession } from "../../application/EditorSession.js";
+import type { Command } from "../../application/contracts/Command.js";
+import type { CommandResult } from "../../application/contracts/CommandResult.js";
+import type { CommandToken } from "../../application/contracts/CommandToken.js";
 
 export class CanvasCommand implements Command {
   private readonly session: EditorSession;

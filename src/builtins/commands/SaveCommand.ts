@@ -1,9 +1,9 @@
 // 用途：保存当前文档到显式或关联路径，由会话在 IO 成功后更新历史。
-import { CommandArguments } from "../CommandArguments.js";
-import type { EditorSession } from "../EditorSession.js";
-import type { Command } from "../contracts/Command.js";
-import type { CommandResult } from "../contracts/CommandResult.js";
-import type { CommandToken } from "../contracts/CommandToken.js";
+import { CommandArguments } from "../../application/CommandArguments.js";
+import type { EditorSession } from "../../application/EditorSession.js";
+import type { Command } from "../../application/contracts/Command.js";
+import type { CommandResult } from "../../application/contracts/CommandResult.js";
+import type { CommandToken } from "../../application/contracts/CommandToken.js";
 
 export class SaveCommand implements Command {
   private readonly session: EditorSession;

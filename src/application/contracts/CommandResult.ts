@@ -2,6 +2,8 @@
 import type { ShapeView } from "./ShapeView.js";
 
 export interface CommandResult {
+  // 命令插件使用通用文本行，不要求排版器认识每一个新命令名。
+  readonly lines?: readonly string[];
   readonly warnings?: readonly { readonly kind: string; readonly id: string }[];
   readonly tree?: {
     readonly canvas?: { readonly width: number; readonly height: number };

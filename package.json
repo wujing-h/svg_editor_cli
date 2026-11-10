@@ -3,6 +3,12 @@
   "version": "1.0.0",
   "description": "CLI SVG editor for the software design course",
   "main": "dist/main.js",
+  "exports": {
+    "./plugin-api": {
+      "types": "./dist/plugin-api/index.d.ts",
+      "default": "./dist/plugin-api/index.js"
+    }
+  },
   "directories": {
     "doc": "doc"
   },

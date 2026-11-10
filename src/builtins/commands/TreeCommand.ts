@@ -1,9 +1,9 @@
 // 用途：查询全文档或指定图形的子树，返回独立描述而不改变历史。
 import type { SvgDocument } from "../../domain/SvgDocument.js";
-import { CommandArguments } from "../CommandArguments.js";
-import type { Command } from "../contracts/Command.js";
-import type { CommandResult } from "../contracts/CommandResult.js";
-import type { CommandToken } from "../contracts/CommandToken.js";
+import { CommandArguments } from "../../application/CommandArguments.js";
+import type { Command } from "../../application/contracts/Command.js";
+import type { CommandResult } from "../../application/contracts/CommandResult.js";
+import type { CommandToken } from "../../application/contracts/CommandToken.js";
 
 export class TreeCommand implements Command {
   private readonly document: SvgDocument;
