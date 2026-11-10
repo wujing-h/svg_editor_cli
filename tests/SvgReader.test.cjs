@@ -83,7 +83,7 @@ test("reader rejects malformed XML and illegal raw or referenced characters inst
 test("reader rejects duplicate IDs, unsupported elements, attributes, children, namespaces, and processing instructions", () => {
   for (const input of [
     svg('<g id="same"><rect id="same"/></g>'), svg("<path/>"), svg('<g transform="translate(1,2)"/>'),
-    svg('<text style="font-size:16px">hello</text>'), svg('<g data-kind="box"/>'),
+    svg('<text style="font-size:16px">hello</text>'), svg('<rect data-kind="unknown"/>'),
     svg('<text><tspan>hello</tspan></text>'), svg('<rect><circle/></rect>'), svg("<g>unexpected text</g>"),
     svg('<g xmlns="http://other.example"/>'), '<svg xmlns="http://other.example" width="1" height="1"/>',
     svg('<g xmlns:x="http://other.example" x:id="other"/>'), svg("<?xml-stylesheet href='other.css'?>"),

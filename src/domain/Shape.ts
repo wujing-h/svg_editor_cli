@@ -37,6 +37,11 @@ export abstract class Shape {
     return this.identifier;
   }
 
+  // kind 是原生 SVG 标签；type 是命令和插件使用的逻辑类型。
+  get type(): string {
+    return this.kind;
+  }
+
   get parent(): GroupShape | undefined {
     return this.parentShape;
   }

@@ -3,6 +3,7 @@ import { DOMParser, onWarningStopParsing } from "@xmldom/xmldom";
 import type { Document, Element, Node } from "@xmldom/xmldom";
 import type { DocumentReadResult } from "../application/contracts/DocumentReadResult.js";
 import type { ShapeFactory } from "../domain/ShapeFactory.js";
+import type { Shape } from "../domain/Shape.js";
 import { SvgDocument } from "../domain/SvgDocument.js";
 
 export class SvgReader {
@@ -94,7 +95,7 @@ export class SvgReader {
         warnings.push({ kind, id });
       }
     }
-    const build = (element: Element, parentId?: string): void => {
+    const build = (element: Element): Shape => {
       const id = ids.get(element);
       if (id === undefined) {
         throw new Error("missing assigned SVG id");
@@ -102,21 +103,15 @@ export class SvgReader {
       const attributes = this.attributesOf(element);
       delete attributes.id;
       const text = this.directText(element);
-      const shape = this.factory.createFromSvg(element.localName ?? element.tagName, id, attributes, text);
-      const children = this.childElements(element);
-      if (children.length !== 0 && !shape.isContainer()) {
-        throw new Error(`unsupported child elements in <${shape.kind}>`);
-      }
-      document.insert(shape, parentId);
-      for (const child of children) {
-        build(child, shape.id);
-      }
+      // 自底向上构造完整离线子树，提供者能在接入文档前检查全部必要部件。
+      const children = this.childElements(element).map((child) => build(child));
+      return this.factory.createFromSvg(element.localName ?? element.tagName, id, attributes, text, children);
     };
     if (this.directText(root).trim() !== "") {
       throw new Error("unexpected text content in <svg>");
     }
     for (const child of this.childElements(root)) {
-      build(child);
+      document.insert(build(child));
     }
     return { document, elementCount: elements.length, warnings };
   }

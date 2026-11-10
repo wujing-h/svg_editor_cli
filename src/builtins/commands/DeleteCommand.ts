@@ -34,7 +34,7 @@ export class DeleteCommand extends EditCommand {
     return {
       summary: {
         template: parent === undefined ? "{kind}#{id} restored into svg" : "{kind}#{id} restored into g#{parent}",
-        values: { kind: shape.kind, id: shape.id, parent: parent?.id ?? "" },
+        values: { kind: shape.type, id: shape.id, parent: parent?.id ?? "" },
       },
     };
   }
@@ -57,6 +57,6 @@ export class DeleteCommand extends EditCommand {
   }
 
   private deletedResult(shape: Shape): CommandResult {
-    return { summary: { template: "{kind}#{id} deleted", values: { kind: shape.kind, id: shape.id } } };
+    return { summary: { template: "{kind}#{id} deleted", values: { kind: shape.type, id: shape.id } } };
   }
 }

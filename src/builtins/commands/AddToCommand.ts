@@ -20,7 +20,7 @@ export class AddToCommand extends PlacementCommand {
     return {
       summary: {
         template: "{kind}#{id} moved into g#{parent}",
-        values: { kind: location.shape.kind, id: location.shape.id, parent: location.parent?.id ?? "" },
+        values: { kind: location.shape.type, id: location.shape.id, parent: location.parent?.id ?? "" },
       },
     };
   }

@@ -102,7 +102,8 @@ export class CliFormatter {
   }
 
   private otherAttributes(shape: ShapeView): readonly [string, string | number][] {
-    return Object.entries(shape.attributes).filter(([name]) => !Object.hasOwn(shape.geometry ?? {}, name));
+    // 来源类型标记用于 SVG 读回，类型的可见标签由树装饰器提供。
+    return Object.entries(shape.attributes).filter(([name]) => name !== "data-kind" && !Object.hasOwn(shape.geometry ?? {}, name));
   }
 
   private attributeList(attributes: Readonly<Record<string, number>>): string {

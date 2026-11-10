@@ -42,7 +42,7 @@ export class ScaleCommand extends EditCommand {
     }
     const shape = this.requireShape();
     shape.restoreGeometry(this.before);
-    return { summary: { template: "{kind}#{id} scale undone", values: { kind: shape.kind, id: shape.id } } };
+    return { summary: { template: "{kind}#{id} scale undone", values: { kind: shape.type, id: shape.id } } };
   }
 
   override redo(): CommandResult {
@@ -70,7 +70,7 @@ export class ScaleCommand extends EditCommand {
     return {
       summary: {
         template: "{kind}#{id} scaled by {factor}",
-        values: { kind: shape.kind, id: shape.id, factor },
+        values: { kind: shape.type, id: shape.id, factor },
       },
     };
   }

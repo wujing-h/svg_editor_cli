@@ -8,6 +8,7 @@ export interface SvgShapeInput {
   readonly tagName: string;
   readonly attributes: ShapeAttributes;
   readonly text: string;
+  // 子节点已完整构造但尚未接入文档；提供者须保留这些对象及其顺序。
   readonly children: readonly Shape[];
 }
 

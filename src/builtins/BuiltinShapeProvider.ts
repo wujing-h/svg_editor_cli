@@ -9,7 +9,11 @@ export interface BuiltinShapeDefinition {
   readonly paint?: "fill" | "stroke";
   readonly requiresText?: boolean;
   readonly pairedRadii?: readonly [string, string];
-  readonly build: (id: string, readNumber: (name: string) => number, styles: ShapeStyles, readText: () => string) => Shape;
+  readonly container?: boolean;
+  readonly build: (
+    id: string, readNumber: (name: string) => number, styles: ShapeStyles, readText: () => string,
+    children: readonly Shape[], dataKind: string | undefined,
+  ) => Shape;
 }
 
 export class BuiltinShapeProvider implements ShapeProvider {
@@ -22,6 +26,10 @@ export class BuiltinShapeProvider implements ShapeProvider {
   }
 
   create(id: string, attributes: ShapeAttributes = {}, text?: string): Shape {
+    return this.createShape(id, attributes, text, []);
+  }
+
+  private createShape(id: string, attributes: ShapeAttributes, text: string | undefined, children: readonly Shape[], dataKind?: string): Shape {
     const definition = this.definition;
     const allowed = new Set([...definition.geometry, "fill", "stroke", "stroke-width", "font-size", "text-anchor"]);
     for (const name of Object.keys(attributes)) {
@@ -32,16 +40,27 @@ export class BuiltinShapeProvider implements ShapeProvider {
     if (!definition.requiresText && text !== undefined) {
       throw new Error("text content is only supported by text shapes");
     }
-    return definition.build(id, (name) => this.number(attributes, name), this.styles(attributes), () => this.requireText(text));
+    return definition.build(id, (name) => this.number(attributes, name), this.styles(attributes), () => this.requireText(text), children, dataKind);
   }
 
   createFromSvg(input: SvgShapeInput): Shape {
     const { id, tagName: kind, attributes, text: content } = input;
-    if (input.children.length !== 0) {
-      throw new Error("complete SVG subtree construction is not configured");
-    }
     const definition = this.definition;
+    if (kind !== this.name) {
+      throw new Error(`unsupported SVG tag for ${this.name}: ${kind}`);
+    }
+    if (input.children.length !== 0 && !definition.container) {
+      throw new Error(`unsupported child elements in <${kind}>`);
+    }
     const normalized: Record<string, string | number> = { ...attributes };
+    // 只有容器支持来源类型标记；其他未知属性仍按原白名单拒绝，避免静默丢失。
+    const dataKind = definition.container ? normalized["data-kind"] : undefined;
+    if (definition.container) {
+      delete normalized["data-kind"];
+    }
+    if (dataKind !== undefined && typeof dataKind !== "string") {
+      throw new Error("invalid SVG data-kind");
+    }
     // SVG 2 的椭圆只有一个半径时，另一半径使用相同长度；同时省略时为零。
     if (definition.pairedRadii !== undefined) {
       const [first, second] = definition.pairedRadii;
@@ -64,7 +83,7 @@ export class BuiltinShapeProvider implements ShapeProvider {
       throw new Error(`unexpected text content in <${kind}>`);
     }
     // 提供者负责默认几何与内容语义，SvgReader 不按图形标签分派。
-    return this.create(id, normalized, definition.requiresText ? content : undefined);
+    return this.createShape(id, normalized, definition.requiresText ? content : undefined, input.children, dataKind);
   }
 
   createFromParameters(id: string, parameters: readonly string[]): Shape {

@@ -66,7 +66,7 @@ export class SetCommand extends EditCommand {
   private result(shape: Shape, snapshot: AttributeSnapshot): CommandResult {
     return {
       attributeChange: {
-        kind: shape.kind, id: shape.id, attribute: snapshot.attribute, value: snapshot.getValue(shape),
+        kind: shape.type, id: shape.id, attribute: snapshot.attribute, value: snapshot.getValue(shape),
       },
     };
   }

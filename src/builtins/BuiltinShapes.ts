@@ -54,8 +54,8 @@ export class BuiltinShapes implements Plugin {
       ),
     }),
     new BuiltinShapeProvider("g", {
-      geometry: [], syntax: "create g <id>",
-      build: (id, _readNumber, styles) => new GroupShape(id, styles),
+      geometry: [], syntax: "create g <id>", container: true,
+      build: (id, _readNumber, styles, _readText, children, dataKind) => new GroupShape(id, styles, children, dataKind),
     }),
   ];
 

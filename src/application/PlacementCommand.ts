@@ -36,7 +36,7 @@ export abstract class PlacementCommand extends EditCommand {
           ? "{kind}#{id} restored to position {position} in svg"
           : "{kind}#{id} restored to position {position} in g#{parent}",
         values: {
-          kind: location.shape.kind, id: location.shape.id,
+          kind: location.shape.type, id: location.shape.id,
           position: location.index + 1, parent: location.parent?.id ?? "",
         },
       },

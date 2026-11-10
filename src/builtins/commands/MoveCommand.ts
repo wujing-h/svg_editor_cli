@@ -73,14 +73,14 @@ export class MoveCommand extends EditCommand {
       return {
         summary: {
           template: restoring ? "{kind}#{id} moved back to ({x},{y})" : "{kind}#{id} moved to ({x},{y})",
-          values: { kind: shape.kind, id: shape.id, x: position.x, y: position.y },
+          values: { kind: shape.type, id: shape.id, x: position.x, y: position.y },
         },
       };
     }
     return {
       summary: {
         template: restoring ? "{kind}#{id} move undone" : "{kind}#{id} moved by ({dx},{dy})",
-        values: { kind: shape.kind, id: shape.id, dx, dy },
+        values: { kind: shape.type, id: shape.id, dx, dy },
       },
     };
   }

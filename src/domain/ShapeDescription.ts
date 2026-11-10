@@ -2,6 +2,8 @@
 export interface ShapeDescription {
   readonly id: string;
   readonly kind: string;
+  // 仅在逻辑类型与原生标签不同时提供；没有此字段时逻辑类型就是 kind。
+  readonly type?: string;
   readonly attributes: Readonly<Record<string, string | number>>;
   // 各图形提供自身几何字段，查询排版无需再按图形标签判断。
   readonly geometry?: Readonly<Record<string, number>>;

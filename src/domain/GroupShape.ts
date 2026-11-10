@@ -9,9 +9,11 @@ import { treeMutationToken } from "./internal/TreeMutationToken.js";
 export class GroupShape extends Shape {
   override readonly kind = "g";
   private childShapes: Shape[] = [];
+  private readonly sourceDataKind: string | undefined;
 
-  constructor(id: string, styles: ShapeStyles = {}, children: readonly Shape[] = []) {
+  constructor(id: string, styles: ShapeStyles = {}, children: readonly Shape[] = [], dataKind?: string) {
     super(id, styles);
+    this.sourceDataKind = dataKind;
     const ids = new Set<string>([id]);
     for (const child of children) {
       if (child.parent !== undefined) {
@@ -80,8 +82,15 @@ export class GroupShape extends Shape {
   }
 
   override describe(): ShapeDescription {
+    const attributes = this.describeStyles();
+    // 未加载的类型只保留来源标记，不据此获得复合语义；子类的实际逻辑类型优先。
+    const dataKind = this.type === this.kind ? this.sourceDataKind : this.type;
+    if (dataKind !== undefined) {
+      attributes["data-kind"] = dataKind;
+    }
     return {
-      id: this.id, kind: this.kind, attributes: this.describeStyles(),
+      id: this.id, kind: this.kind, attributes,
+      ...(this.type === this.kind ? {} : { type: this.type }),
       children: this.childShapes.map((child) => child.describe()),
     };
   }

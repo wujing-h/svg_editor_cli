@@ -2,8 +2,12 @@
 const { GroupShape, RectShape, TextShape } = require("pj/plugin-api");
 
 class ProtectedGroup extends GroupShape {
-  constructor(id, children = [new RectShape(`${id}-body`, 1, 2, 30, 40), new TextShape(`${id}-caption`, 3, 4, "title")]) {
-    super(id, {}, children);
+  constructor(id, children = [new RectShape(`${id}-body`, 1, 2, 30, 40), new TextShape(`${id}-caption`, 3, 4, "title")], styles = {}) {
+    super(id, styles, children);
+  }
+
+  get type() {
+    return "protected";
   }
 
   validateChildren(children) {

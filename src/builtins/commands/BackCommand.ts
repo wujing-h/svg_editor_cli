@@ -17,6 +17,6 @@ export class BackCommand extends PlacementCommand {
   }
 
   protected override appliedResult(location: SubtreeLocation): CommandResult {
-    return { summary: { template: "{kind}#{id} moved to back", values: { kind: location.shape.kind, id: location.shape.id } } };
+    return { summary: { template: "{kind}#{id} moved to back", values: { kind: location.shape.type, id: location.shape.id } } };
   }
 }

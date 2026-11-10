@@ -54,7 +54,7 @@ export class CreateCommand extends EditCommand {
       throw new Error("create target is no longer in this document");
     }
     this.location = this.document.remove(shape.id);
-    return { summary: { template: "{kind}#{id} deleted", values: { kind: shape.kind, id: shape.id } } };
+    return { summary: { template: "{kind}#{id} deleted", values: { kind: shape.type, id: shape.id } } };
   }
 
   override redo(): CommandResult {
@@ -78,7 +78,7 @@ export class CreateCommand extends EditCommand {
     return {
       summary: {
         template: parent === undefined ? "{kind}#{id} created" : "{kind}#{id} created in g#{parent}",
-        values: { kind: shape.kind, id: shape.id, parent: parent?.id ?? "" },
+        values: { kind: shape.type, id: shape.id, parent: parent?.id ?? "" },
       },
     };
   }
