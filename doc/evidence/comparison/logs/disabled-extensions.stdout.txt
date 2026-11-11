@@ -1,0 +1,8 @@
+svg-editor 0.1 - type 'help' for commands
+canvas 800x600 created
+rect#r created
+svg (800x600)
+└── rect#r  x=0 y=0 w=10 h=10
+error: unknown command: stats
+error: unknown command: dir
+error: unknown shape type: box (is the plugin loaded?)

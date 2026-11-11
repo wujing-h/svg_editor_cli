@@ -1,0 +1,1807 @@
+{
+  "schema": 1,
+  "before": {
+    "ref": "final",
+    "commit": "4ab75625fb349b62bd05021ff0265703417e4ccd",
+    "totals": {
+      "内核": {
+        "files": 57,
+        "lines": 3435,
+        "nonblank": 3089,
+        "functions": 297,
+        "decisions": 450,
+        "complexity": 747
+      },
+      "装配处": {
+        "files": 1,
+        "lines": 20,
+        "nonblank": 18,
+        "functions": 1,
+        "decisions": 0,
+        "complexity": 1
+      },
+      "插件": {
+        "files": 0,
+        "lines": 0,
+        "nonblank": 0,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0
+      },
+      "VSCode": {
+        "files": 0,
+        "lines": 0,
+        "nonblank": 0,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0
+      }
+    },
+    "files": [
+      {
+        "file": "src/application/CommandArguments.ts",
+        "category": "内核",
+        "lines": 39,
+        "nonblank": 33,
+        "functions": 4,
+        "decisions": 6,
+        "complexity": 10,
+        "responsibility": "校验命令参数数量并解析十进制数字，供具体命令复用。"
+      },
+      {
+        "file": "src/application/CommandDispatcher.ts",
+        "category": "内核",
+        "lines": 86,
+        "nonblank": 82,
+        "functions": 3,
+        "decisions": 19,
+        "complexity": 22,
+        "responsibility": "集中将命令名转换为命令对象，并通过统一接口执行。"
+      },
+      {
+        "file": "src/application/CommandHistory.ts",
+        "category": "内核",
+        "lines": 55,
+        "nonblank": 49,
+        "functions": 5,
+        "decisions": 3,
+        "complexity": 8,
+        "responsibility": "管理编辑历史，仅在执行或恢复成功后更新 undo/redo 栈。"
+      },
+      {
+        "file": "src/application/EditCommand.ts",
+        "category": "内核",
+        "lines": 10,
+        "nonblank": 9,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "定义可撤销编辑的同步执行与局部恢复契约。"
+      },
+      {
+        "file": "src/application/EditorSession.ts",
+        "category": "内核",
+        "lines": 101,
+        "nonblank": 90,
+        "functions": 10,
+        "decisions": 8,
+        "complexity": 18,
+        "responsibility": "管理当前文档，协调命令执行、编辑历史与文档操作后的历史限制。"
+      },
+      {
+        "file": "src/application/PlacementCommand.ts",
+        "category": "内核",
+        "lines": 59,
+        "nonblank": 52,
+        "functions": 5,
+        "decisions": 3,
+        "complexity": 8,
+        "responsibility": "共享换父和同级换位的历史流程，通过文档恢复前后局部位置。"
+      },
+      {
+        "file": "src/application/commands/AddToCommand.ts",
+        "category": "内核",
+        "lines": 27,
+        "nonblank": 24,
+        "functions": 3,
+        "decisions": 1,
+        "complexity": 4,
+        "responsibility": "将已有图形子树移入指定容器，作为最后一个子节点。"
+      },
+      {
+        "file": "src/application/commands/BackCommand.ts",
+        "category": "内核",
+        "lines": 22,
+        "nonblank": 19,
+        "functions": 3,
+        "decisions": 0,
+        "complexity": 3,
+        "responsibility": "将图形移到同级绘制顺序开头，使其位于最后层。"
+      },
+      {
+        "file": "src/application/commands/CanvasCommand.ts",
+        "category": "内核",
+        "lines": 42,
+        "nonblank": 37,
+        "functions": 2,
+        "decisions": 1,
+        "complexity": 3,
+        "responsibility": "查询当前画布，或在完整校验后修改画布尺寸。"
+      },
+      {
+        "file": "src/application/commands/CreateCommand.ts",
+        "category": "内核",
+        "lines": 85,
+        "nonblank": 77,
+        "functions": 7,
+        "decisions": 9,
+        "complexity": 16,
+        "responsibility": "创建图形并保存对象及原位置，供撤销移除和重做接回。"
+      },
+      {
+        "file": "src/application/commands/DeleteCommand.ts",
+        "category": "内核",
+        "lines": 62,
+        "nonblank": 55,
+        "functions": 6,
+        "decisions": 4,
+        "complexity": 10,
+        "responsibility": "删除一个图形子树，保留原对象、父容器和顺序以支持局部恢复。"
+      },
+      {
+        "file": "src/application/commands/FrontCommand.ts",
+        "category": "内核",
+        "lines": 22,
+        "nonblank": 19,
+        "functions": 3,
+        "decisions": 0,
+        "complexity": 3,
+        "responsibility": "将图形移到同级绘制顺序末尾，使其位于最前层。"
+      },
+      {
+        "file": "src/application/commands/GroupCommand.ts",
+        "category": "内核",
+        "lines": 60,
+        "nonblank": 53,
+        "functions": 7,
+        "decisions": 2,
+        "complexity": 9,
+        "responsibility": "通过工厂创建容器并收编已有图形，保存局部结构变化以撤销和重做。"
+      },
+      {
+        "file": "src/application/commands/HelpCommand.ts",
+        "category": "内核",
+        "lines": 42,
+        "nonblank": 38,
+        "functions": 2,
+        "decisions": 1,
+        "complexity": 3,
+        "responsibility": "提供当前 CLI 已支持命令的语法与说明。"
+      },
+      {
+        "file": "src/application/commands/InitCommand.ts",
+        "category": "内核",
+        "lines": 30,
+        "nonblank": 26,
+        "functions": 2,
+        "decisions": 0,
+        "complexity": 2,
+        "responsibility": "校验 init 参数并建立默认或指定尺寸的新文档。"
+      },
+      {
+        "file": "src/application/commands/MoveCommand.ts",
+        "category": "内核",
+        "lines": 87,
+        "nonblank": 80,
+        "functions": 6,
+        "decisions": 9,
+        "complexity": 15,
+        "responsibility": "委派统一图形移动，保存前后局部几何以准确撤销和重做。"
+      },
+      {
+        "file": "src/application/commands/ReadCommand.ts",
+        "category": "内核",
+        "lines": 26,
+        "nonblank": 23,
+        "functions": 2,
+        "decisions": 0,
+        "complexity": 2,
+        "responsibility": "异步读入 SVG，返回成功摘要及缺 id 警告，历史与路径更新由会话决定。"
+      },
+      {
+        "file": "src/application/commands/RedoCommand.ts",
+        "category": "内核",
+        "lines": 21,
+        "nonblank": 18,
+        "functions": 2,
+        "decisions": 0,
+        "complexity": 2,
+        "responsibility": "校验 redo 参数并请求会话重做一个编辑单元。"
+      },
+      {
+        "file": "src/application/commands/SaveCommand.ts",
+        "category": "内核",
+        "lines": 27,
+        "nonblank": 24,
+        "functions": 2,
+        "decisions": 1,
+        "complexity": 3,
+        "responsibility": "保存当前文档到显式或关联路径，由会话在 IO 成功后更新历史。"
+      },
+      {
+        "file": "src/application/commands/ScaleCommand.ts",
+        "category": "内核",
+        "lines": 77,
+        "nonblank": 70,
+        "functions": 6,
+        "decisions": 5,
+        "complexity": 11,
+        "responsibility": "委派统一图形缩放，保存前后局部几何以准确撤销和重做。"
+      },
+      {
+        "file": "src/application/commands/SetCommand.ts",
+        "category": "内核",
+        "lines": 73,
+        "nonblank": 66,
+        "functions": 6,
+        "decisions": 4,
+        "complexity": 10,
+        "responsibility": "通过统一图形接口修改一个属性，保存原值和缺失状态以支持撤销重做。"
+      },
+      {
+        "file": "src/application/commands/ShowCommand.ts",
+        "category": "内核",
+        "lines": 26,
+        "nonblank": 23,
+        "functions": 2,
+        "decisions": 1,
+        "complexity": 3,
+        "responsibility": "查询单个图形的属性与父容器，返回只读展示数据。"
+      },
+      {
+        "file": "src/application/commands/TreeCommand.ts",
+        "category": "内核",
+        "lines": 28,
+        "nonblank": 25,
+        "functions": 3,
+        "decisions": 1,
+        "complexity": 4,
+        "responsibility": "查询全文档或指定图形的子树，返回独立描述而不改变历史。"
+      },
+      {
+        "file": "src/application/commands/UndoCommand.ts",
+        "category": "内核",
+        "lines": 21,
+        "nonblank": 18,
+        "functions": 2,
+        "decisions": 0,
+        "complexity": 2,
+        "responsibility": "校验 undo 参数并请求会话撤销一个编辑单元。"
+      },
+      {
+        "file": "src/application/commands/UngroupCommand.ts",
+        "category": "内核",
+        "lines": 47,
+        "nonblank": 40,
+        "functions": 6,
+        "decisions": 1,
+        "complexity": 7,
+        "responsibility": "解散非根级容器并提升子节点，保留原组对象和顺序以支持局部恢复。"
+      },
+      {
+        "file": "src/application/contracts/Command.ts",
+        "category": "内核",
+        "lines": 6,
+        "nonblank": 5,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "定义统一命令执行接口，兼容同步编辑与异步文件操作。"
+      },
+      {
+        "file": "src/application/contracts/CommandInput.ts",
+        "category": "内核",
+        "lines": 7,
+        "nonblank": 6,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "定义 CLI 提交给应用层的只读命令输入。"
+      },
+      {
+        "file": "src/application/contracts/CommandResult.ts",
+        "category": "内核",
+        "lines": 28,
+        "nonblank": 27,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "定义命令返回的展示数据，让终端排版与应用逻辑分开。"
+      },
+      {
+        "file": "src/application/contracts/CommandToken.ts",
+        "category": "内核",
+        "lines": 5,
+        "nonblank": 5,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "保存命令参数的文本与引用信息，避免将引号内的关键字误作语法。"
+      },
+      {
+        "file": "src/application/contracts/DocumentReadResult.ts",
+        "category": "内核",
+        "lines": 8,
+        "nonblank": 7,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "传递已完整解析的独立文档、元素计数及待成功后输出的缺 id 警告。"
+      },
+      {
+        "file": "src/application/contracts/DocumentStore.ts",
+        "category": "内核",
+        "lines": 9,
+        "nonblank": 8,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "定义文档读写契约，由组装入口注入具体存储，隔离文件和 XML 实现。"
+      },
+      {
+        "file": "src/application/contracts/ShapeView.ts",
+        "category": "内核",
+        "lines": 4,
+        "nonblank": 3,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "通过应用层契约传递独立只读图形描述，CLI 不接触可变领域对象。"
+      },
+      {
+        "file": "src/cli/CliApplication.ts",
+        "category": "内核",
+        "lines": 58,
+        "nonblank": 52,
+        "functions": 3,
+        "decisions": 7,
+        "complexity": 10,
+        "responsibility": "运行逐行 SVG 命令终端，等待执行结果并维持统一错误输出。"
+      },
+      {
+        "file": "src/cli/CliFormatter.ts",
+        "category": "内核",
+        "lines": 124,
+        "nonblank": 109,
+        "functions": 15,
+        "decisions": 36,
+        "complexity": 51,
+        "responsibility": "排版命令摘要、图形查询、属性变化与帮助内容，统一 CLI 的错误前缀。"
+      },
+      {
+        "file": "src/cli/CommandLineParser.ts",
+        "category": "内核",
+        "lines": 73,
+        "nonblank": 62,
+        "functions": 1,
+        "decisions": 18,
+        "complexity": 19,
+        "responsibility": "解析逐行 CLI 输入，保留双引号文本并正确区分注释与颜色。"
+      },
+      {
+        "file": "src/domain/AttributeSnapshot.ts",
+        "category": "内核",
+        "lines": 22,
+        "nonblank": 19,
+        "functions": 2,
+        "decisions": 1,
+        "complexity": 3,
+        "responsibility": "保存一个属性的局部值及缺失状态，绑定原图形以支持准确恢复。"
+      },
+      {
+        "file": "src/domain/CanvasSize.ts",
+        "category": "内核",
+        "lines": 5,
+        "nonblank": 5,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "提供画布尺寸的只读描述，避免向外暴露文档内部状态。"
+      },
+      {
+        "file": "src/domain/CircleShape.ts",
+        "category": "内核",
+        "lines": 96,
+        "nonblank": 82,
+        "functions": 13,
+        "decisions": 5,
+        "complexity": 18,
+        "responsibility": "封装圆的圆心和半径，支持原子几何操作与局部恢复。"
+      },
+      {
+        "file": "src/domain/EllipseShape.ts",
+        "category": "内核",
+        "lines": 101,
+        "nonblank": 87,
+        "functions": 13,
+        "decisions": 7,
+        "complexity": 20,
+        "responsibility": "封装椭圆圆心与两轴半径，支持原子几何操作与局部恢复。"
+      },
+      {
+        "file": "src/domain/GeometrySnapshot.ts",
+        "category": "内核",
+        "lines": 40,
+        "nonblank": 35,
+        "functions": 4,
+        "decisions": 3,
+        "complexity": 7,
+        "responsibility": "保存图形及其子孙的局部几何值，并防止恢复到其他对象。"
+      },
+      {
+        "file": "src/domain/GroupShape.ts",
+        "category": "内核",
+        "lines": 97,
+        "nonblank": 84,
+        "functions": 14,
+        "decisions": 10,
+        "complexity": 24,
+        "responsibility": "封装有序容器，通过多态递归操作子图形并保证整组几何修改原子性。"
+      },
+      {
+        "file": "src/domain/GroupingChange.ts",
+        "category": "内核",
+        "lines": 39,
+        "nonblank": 34,
+        "functions": 5,
+        "decisions": 3,
+        "complexity": 8,
+        "responsibility": "保存分组或解组前后受影响的子列表，绑定原文档和组对象供局部恢复。"
+      },
+      {
+        "file": "src/domain/LineShape.ts",
+        "category": "内核",
+        "lines": 100,
+        "nonblank": 86,
+        "functions": 13,
+        "decisions": 5,
+        "complexity": 18,
+        "responsibility": "封装线段的两个端点，支持原子几何操作与局部恢复。"
+      },
+      {
+        "file": "src/domain/PlacementChange.ts",
+        "category": "内核",
+        "lines": 7,
+        "nonblank": 6,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "保存一次换父或同级换位的前后位置，不复制整份文档。"
+      },
+      {
+        "file": "src/domain/RectShape.ts",
+        "category": "内核",
+        "lines": 119,
+        "nonblank": 105,
+        "functions": 13,
+        "decisions": 7,
+        "complexity": 20,
+        "responsibility": "封装矩形几何，支持原子移动、缩放以及准确的局部恢复。"
+      },
+      {
+        "file": "src/domain/Shape.ts",
+        "category": "内核",
+        "lines": 193,
+        "nonblank": 174,
+        "functions": 17,
+        "decisions": 34,
+        "complexity": 51,
+        "responsibility": "封装图形身份与公共样式，定义统一几何、属性修改及局部恢复契约。"
+      },
+      {
+        "file": "src/domain/ShapeDescription.ts",
+        "category": "内核",
+        "lines": 13,
+        "nonblank": 13,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "提供图形的只读属性描述，供后续 CLI 展示与 SVG 输出使用。"
+      },
+      {
+        "file": "src/domain/ShapeFactory.ts",
+        "category": "内核",
+        "lines": 208,
+        "nonblank": 196,
+        "functions": 14,
+        "decisions": 44,
+        "complexity": 58,
+        "responsibility": "集中创建六种内置图形，共享位置参数与属性描述的类型分派。"
+      },
+      {
+        "file": "src/domain/ShapeStyles.ts",
+        "category": "内核",
+        "lines": 9,
+        "nonblank": 9,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "描述图形的可选初始样式，区分属性缺失与显式设置。"
+      },
+      {
+        "file": "src/domain/SiblingOrder.ts",
+        "category": "内核",
+        "lines": 8,
+        "nonblank": 7,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "描述一个受影响父容器的子节点顺序，根级节点以 undefined 表示父容器。"
+      },
+      {
+        "file": "src/domain/SubtreeLocation.ts",
+        "category": "内核",
+        "lines": 11,
+        "nonblank": 10,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "记录子树的文档、对象、父容器与位置，供删除或换位的局部恢复使用。"
+      },
+      {
+        "file": "src/domain/SvgDocument.ts",
+        "category": "内核",
+        "lines": 441,
+        "nonblank": 408,
+        "functions": 34,
+        "decisions": 108,
+        "complexity": 142,
+        "responsibility": "管理画布与有序图形树，受控维护唯一 id、父子关系及文档归属。"
+      },
+      {
+        "file": "src/domain/TextShape.ts",
+        "category": "内核",
+        "lines": 95,
+        "nonblank": 81,
+        "functions": 13,
+        "decisions": 6,
+        "complexity": 19,
+        "responsibility": "封装文字坐标与原始内容，几何操作保留文本并支持局部恢复。"
+      },
+      {
+        "file": "src/domain/internal/TreeMutationToken.ts",
+        "category": "内核",
+        "lines": 3,
+        "nonblank": 3,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "为树结构的内部写入口提供凭据，普通调用方通过 SvgDocument 操作。"
+      },
+      {
+        "file": "src/infrastructure/SvgFileStore.ts",
+        "category": "内核",
+        "lines": 59,
+        "nonblank": 55,
+        "functions": 4,
+        "decisions": 3,
+        "complexity": 7,
+        "responsibility": "实现 UTF-8 SVG 读写，构造独立文档并以临时文件保存，转换文件错误。"
+      },
+      {
+        "file": "src/infrastructure/SvgReader.ts",
+        "category": "内核",
+        "lines": 200,
+        "nonblank": 189,
+        "functions": 13,
+        "decisions": 63,
+        "complexity": 76,
+        "responsibility": "严格解析限定范围的 SVG，预留全部显式 id 后补全匿名元素并构造独立文档。"
+      },
+      {
+        "file": "src/infrastructure/SvgWriter.ts",
+        "category": "内核",
+        "lines": 72,
+        "nonblank": 67,
+        "functions": 7,
+        "decisions": 11,
+        "complexity": 18,
+        "responsibility": "将只读文档描述序列化为独立 SVG，保留顺序并转义 XML 属性与文本。"
+      },
+      {
+        "file": "src/main.ts",
+        "category": "装配处",
+        "lines": 20,
+        "nonblank": 18,
+        "functions": 1,
+        "decisions": 0,
+        "complexity": 1,
+        "responsibility": "组装 CLI 的解析、分发与展示对象，并启动程序。"
+      }
+    ]
+  },
+  "after": {
+    "ref": "HEAD",
+    "commit": "fc86fcbcd46f7f1ba5a2d4a37a6250c8ace8f077",
+    "totals": {
+      "内核": {
+        "files": 64,
+        "lines": 3352,
+        "nonblank": 3025,
+        "functions": 309,
+        "decisions": 502,
+        "complexity": 811
+      },
+      "装配处": {
+        "files": 4,
+        "lines": 244,
+        "nonblank": 223,
+        "functions": 20,
+        "decisions": 47,
+        "complexity": 67
+      },
+      "插件": {
+        "files": 38,
+        "lines": 1533,
+        "nonblank": 1385,
+        "functions": 159,
+        "decisions": 166,
+        "complexity": 325
+      },
+      "VSCode": {
+        "files": 5,
+        "lines": 160,
+        "nonblank": 145,
+        "functions": 14,
+        "decisions": 22,
+        "complexity": 36
+      }
+    },
+    "files": [
+      {
+        "file": "extensions/vscode-svg/src/SvgDocumentSymbolProvider.ts",
+        "category": "VSCode",
+        "lines": 33,
+        "nonblank": 30,
+        "functions": 5,
+        "decisions": 4,
+        "complexity": 9,
+        "responsibility": "将 XML 位置树适配为 VSCode 原生大纲节点，由宿主负责显示、刷新和点击导航。"
+      },
+      {
+        "file": "extensions/vscode-svg/src/SvgFileDecorationProvider.ts",
+        "category": "VSCode",
+        "lines": 29,
+        "nonblank": 24,
+        "functions": 2,
+        "decisions": 5,
+        "complexity": 7,
+        "responsibility": "为真实 SVG 文件提供 Explorer 行尾标记，跳过目录、读取失败和已取消的请求。"
+      },
+      {
+        "file": "extensions/vscode-svg/src/XmlOutlineNode.ts",
+        "category": "VSCode",
+        "lines": 9,
+        "nonblank": 9,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "定义大纲的只读展示节点；源码区间使用从零开始、末端不包含在内的 UTF-16 偏移。"
+      },
+      {
+        "file": "extensions/vscode-svg/src/XmlOutlineParser.ts",
+        "category": "VSCode",
+        "lines": 67,
+        "nonblank": 61,
+        "functions": 5,
+        "decisions": 13,
+        "complexity": 18,
+        "responsibility": "把 XML 文本解析成带源码区间的元素树，不创建图形对象或补写 id。"
+      },
+      {
+        "file": "extensions/vscode-svg/src/extension.ts",
+        "category": "VSCode",
+        "lines": 22,
+        "nonblank": 21,
+        "functions": 2,
+        "decisions": 0,
+        "complexity": 2,
+        "responsibility": "组装 VSCode 扩展功能，将提供者注册给宿主并管理资源释放。"
+      },
+      {
+        "file": "plugins/plugin-dir/src/DirCommand.ts",
+        "category": "插件",
+        "lines": 44,
+        "nonblank": 40,
+        "functions": 7,
+        "decisions": 8,
+        "complexity": 15,
+        "responsibility": "通过目录接口列出当前目录直接子项，稳定排序且不访问或修改 SVG 文档。"
+      },
+      {
+        "file": "plugins/plugin-dir/src/DirPlugin.ts",
+        "category": "插件",
+        "lines": 20,
+        "nonblank": 18,
+        "functions": 2,
+        "decisions": 1,
+        "complexity": 3,
+        "responsibility": "注册 dir 的帮助和命令工厂，仅依赖宿主提供的目录端口。"
+      },
+      {
+        "file": "plugins/plugin-dir/src/index.ts",
+        "category": "插件",
+        "lines": 6,
+        "nonblank": 5,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "提供 dir 插件的默认实例及可独立检查、测试的公开类。"
+      },
+      {
+        "file": "plugins/plugin-shape-box/src/BoxAttributes.ts",
+        "category": "插件",
+        "lines": 18,
+        "nonblank": 15,
+        "functions": 2,
+        "decisions": 7,
+        "complexity": 9,
+        "responsibility": "将 box 的 fill/label 映射到必要子部件，只经框架事务修改属性。"
+      },
+      {
+        "file": "plugins/plugin-shape-box/src/BoxPlugin.ts",
+        "category": "插件",
+        "lines": 14,
+        "nonblank": 13,
+        "functions": 1,
+        "decisions": 1,
+        "complexity": 2,
+        "responsibility": "同包注册 box 提供者、属性策略和类型标签，通过宿主原子激活。"
+      },
+      {
+        "file": "plugins/plugin-shape-box/src/BoxProvider.ts",
+        "category": "插件",
+        "lines": 91,
+        "nonblank": 85,
+        "functions": 5,
+        "decisions": 28,
+        "complexity": 33,
+        "responsibility": "解析 box 参数并离线创建模板，或从完整原生 g 子树恢复复合语义。"
+      },
+      {
+        "file": "plugins/plugin-shape-box/src/BoxShape.ts",
+        "category": "插件",
+        "lines": 36,
+        "nonblank": 31,
+        "functions": 6,
+        "decisions": 4,
+        "complexity": 10,
+        "responsibility": "以普通 g 组合矩形和标题，保护必要部件的对象身份并禁止解组。"
+      },
+      {
+        "file": "plugins/plugin-shape-box/src/BoxTypeLabel.ts",
+        "category": "插件",
+        "lines": 11,
+        "nonblank": 9,
+        "functions": 1,
+        "decisions": 1,
+        "complexity": 2,
+        "responsibility": "为已恢复 box 语义的容器行追加类型标签，不依赖其他树标签。"
+      },
+      {
+        "file": "plugins/plugin-shape-box/src/index.ts",
+        "category": "插件",
+        "lines": 8,
+        "nonblank": 8,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "导出 box 包的默认实例及可独立测试的图形和扩展实现。"
+      },
+      {
+        "file": "plugins/plugin-stats/src/StatsCommand.ts",
+        "category": "插件",
+        "lines": 44,
+        "nonblank": 41,
+        "functions": 4,
+        "decisions": 8,
+        "complexity": 12,
+        "responsibility": "按深度优先首次出现顺序统计叶子类型，容器与根 SVG 分开计数。"
+      },
+      {
+        "file": "plugins/plugin-stats/src/StatsPlugin.ts",
+        "category": "插件",
+        "lines": 21,
+        "nonblank": 19,
+        "functions": 2,
+        "decisions": 1,
+        "complexity": 3,
+        "responsibility": "注册 stats 的命令元数据与构造入口，不依赖内置命令表或其他插件。"
+      },
+      {
+        "file": "plugins/plugin-stats/src/index.ts",
+        "category": "插件",
+        "lines": 6,
+        "nonblank": 5,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "提供 stats 插件包的默认实例和可独立测试的公开类。"
+      },
+      {
+        "file": "plugins/plugin-tree-star/src/ContentSnapshot.ts",
+        "category": "插件",
+        "lines": 28,
+        "nonblank": 24,
+        "functions": 7,
+        "decisions": 5,
+        "complexity": 12,
+        "responsibility": "规范化画布、属性、子树和节点位置，封装内容比较而非记录操作次数。"
+      },
+      {
+        "file": "plugins/plugin-tree-star/src/ModifiedStar.ts",
+        "category": "插件",
+        "lines": 29,
+        "nonblank": 25,
+        "functions": 3,
+        "decisions": 8,
+        "complexity": 11,
+        "responsibility": "实例内维护保存基线和当前内容，为变化节点、祖先和 SVG 根提供星号。"
+      },
+      {
+        "file": "plugins/plugin-tree-star/src/ModifiedStarPlugin.ts",
+        "category": "插件",
+        "lines": 17,
+        "nonblank": 15,
+        "functions": 2,
+        "decisions": 2,
+        "complexity": 4,
+        "responsibility": "每次激活创建独立标签实例，并把只读会话订阅交给宿主释放。"
+      },
+      {
+        "file": "plugins/plugin-tree-star/src/index.ts",
+        "category": "插件",
+        "lines": 6,
+        "nonblank": 6,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "导出修改星号插件的默认实例与可独立测试的状态类。"
+      },
+      {
+        "file": "src/application/AttributeChange.ts",
+        "category": "内核",
+        "lines": 64,
+        "nonblank": 58,
+        "functions": 6,
+        "decisions": 9,
+        "complexity": 15,
+        "responsibility": "保存一批属性的局部前后值，原子恢复并在中途失败时补偿已尝试的写入。"
+      },
+      {
+        "file": "src/application/AttributeService.ts",
+        "category": "内核",
+        "lines": 67,
+        "nonblank": 62,
+        "functions": 7,
+        "decisions": 8,
+        "complexity": 15,
+        "responsibility": "选择唯一属性策略，无匹配时保留原白名单，并把整次修改交给局部事务。"
+      },
+      {
+        "file": "src/application/AttributeTransaction.ts",
+        "category": "内核",
+        "lines": 87,
+        "nonblank": 79,
+        "functions": 10,
+        "decisions": 9,
+        "complexity": 19,
+        "responsibility": "受控执行一次属性编辑，合并重复字段记录并在成功或失败后关闭插件写入口。"
+      },
+      {
+        "file": "src/application/CommandArguments.ts",
+        "category": "内核",
+        "lines": 39,
+        "nonblank": 33,
+        "functions": 4,
+        "decisions": 6,
+        "complexity": 10,
+        "responsibility": "校验命令参数数量并解析十进制数字，供具体命令复用。"
+      },
+      {
+        "file": "src/application/CommandDispatcher.ts",
+        "category": "内核",
+        "lines": 20,
+        "nonblank": 17,
+        "functions": 2,
+        "decisions": 0,
+        "complexity": 2,
+        "responsibility": "从注入的注册表取得命令对象，交给会话统一执行及管理历史。"
+      },
+      {
+        "file": "src/application/CommandHistory.ts",
+        "category": "内核",
+        "lines": 55,
+        "nonblank": 49,
+        "functions": 5,
+        "decisions": 3,
+        "complexity": 8,
+        "responsibility": "管理编辑历史，仅在执行或恢复成功后更新 undo/redo 栈。"
+      },
+      {
+        "file": "src/application/CommandRegistry.ts",
+        "category": "内核",
+        "lines": 39,
+        "nonblank": 35,
+        "functions": 5,
+        "decisions": 10,
+        "complexity": 15,
+        "responsibility": "按名称管理命令构造入口和帮助信息，不依赖具体命令实现。"
+      },
+      {
+        "file": "src/application/EditCommand.ts",
+        "category": "内核",
+        "lines": 10,
+        "nonblank": 9,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "定义可撤销编辑的同步执行与局部恢复契约。"
+      },
+      {
+        "file": "src/application/EditorSession.ts",
+        "category": "内核",
+        "lines": 180,
+        "nonblank": 165,
+        "functions": 18,
+        "decisions": 23,
+        "complexity": 41,
+        "responsibility": "管理当前文档，协调命令执行、编辑历史与文档操作后的历史限制。"
+      },
+      {
+        "file": "src/application/ExtensionRegistry.ts",
+        "category": "内核",
+        "lines": 39,
+        "nonblank": 33,
+        "functions": 7,
+        "decisions": 5,
+        "complexity": 12,
+        "responsibility": "统一管理具名扩展，拒绝重复注册，为插件回滚提供精确撤销入口。"
+      },
+      {
+        "file": "src/application/PlacementCommand.ts",
+        "category": "内核",
+        "lines": 59,
+        "nonblank": 52,
+        "functions": 5,
+        "decisions": 3,
+        "complexity": 8,
+        "responsibility": "共享换父和同级换位的历史流程，通过文档恢复前后局部位置。"
+      },
+      {
+        "file": "src/application/PluginHost.ts",
+        "category": "内核",
+        "lines": 187,
+        "nonblank": 178,
+        "functions": 27,
+        "decisions": 43,
+        "complexity": 70,
+        "responsibility": "暂存并校验插件注册，成功后统一接入，失败时回滚本次扩展和资源。"
+      },
+      {
+        "file": "src/application/ReadonlyData.ts",
+        "category": "内核",
+        "lines": 16,
+        "nonblank": 15,
+        "functions": 2,
+        "decisions": 3,
+        "complexity": 5,
+        "responsibility": "复制并递归冻结纯描述数据，避免扩展通过查询结果影响文档或其他扩展。"
+      },
+      {
+        "file": "src/application/ShapeRegistry.ts",
+        "category": "内核",
+        "lines": 10,
+        "nonblank": 9,
+        "functions": 2,
+        "decisions": 2,
+        "complexity": 4,
+        "responsibility": "校验并注册图形提供者，为领域工厂提供按名称查询的入口。"
+      },
+      {
+        "file": "src/application/contracts/AttributeHandler.ts",
+        "category": "内核",
+        "lines": 15,
+        "nonblank": 13,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "定义同步属性策略和仅在本次编辑内有效的只读查询、受控写入接口。"
+      },
+      {
+        "file": "src/application/contracts/Command.ts",
+        "category": "内核",
+        "lines": 6,
+        "nonblank": 5,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "定义统一命令执行接口，兼容同步编辑与异步文件操作。"
+      },
+      {
+        "file": "src/application/contracts/CommandDefinition.ts",
+        "category": "内核",
+        "lines": 10,
+        "nonblank": 9,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "定义命令注册信息，将名称、帮助文案与对象构造入口放在一起。"
+      },
+      {
+        "file": "src/application/contracts/CommandInput.ts",
+        "category": "内核",
+        "lines": 7,
+        "nonblank": 6,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "定义 CLI 提交给应用层的只读命令输入。"
+      },
+      {
+        "file": "src/application/contracts/CommandResult.ts",
+        "category": "内核",
+        "lines": 30,
+        "nonblank": 29,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "定义命令返回的展示数据，让终端排版与应用逻辑分开。"
+      },
+      {
+        "file": "src/application/contracts/CommandToken.ts",
+        "category": "内核",
+        "lines": 5,
+        "nonblank": 5,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "保存命令参数的文本与引用信息，避免将引号内的关键字误作语法。"
+      },
+      {
+        "file": "src/application/contracts/DirectoryReader.ts",
+        "category": "内核",
+        "lines": 10,
+        "nonblank": 9,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "定义目录查询端口，命令无需直接依赖 Node.js 文件系统。"
+      },
+      {
+        "file": "src/application/contracts/DocumentReadResult.ts",
+        "category": "内核",
+        "lines": 8,
+        "nonblank": 7,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "传递已完整解析的独立文档、元素计数及待成功后输出的缺 id 警告。"
+      },
+      {
+        "file": "src/application/contracts/DocumentStore.ts",
+        "category": "内核",
+        "lines": 9,
+        "nonblank": 8,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "定义文档读写契约，由组装入口注入具体存储，隔离文件和 XML 实现。"
+      },
+      {
+        "file": "src/application/contracts/EditorServices.ts",
+        "category": "内核",
+        "lines": 16,
+        "nonblank": 15,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "向插件提供公开文档查询和目录访问服务，不暴露宿主装配对象。"
+      },
+      {
+        "file": "src/application/contracts/Plugin.ts",
+        "category": "内核",
+        "lines": 6,
+        "nonblank": 5,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "定义插件同步注册生命周期；实际命令仍可异步执行文件操作。"
+      },
+      {
+        "file": "src/application/contracts/PluginContext.ts",
+        "category": "内核",
+        "lines": 20,
+        "nonblank": 18,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "提供插件激活期间的受控注册入口，以及可释放资源和公开服务。"
+      },
+      {
+        "file": "src/application/contracts/PluginManifest.ts",
+        "category": "内核",
+        "lines": 10,
+        "nonblank": 10,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "定义插件清单中的四类贡献名称，与实际暂存注册逐项比较。"
+      },
+      {
+        "file": "src/application/contracts/SessionEvent.ts",
+        "category": "内核",
+        "lines": 18,
+        "nonblank": 14,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "公开独立只读内容快照和成功操作事件，供插件维护自己的内容基线。"
+      },
+      {
+        "file": "src/application/contracts/ShapeProvider.ts",
+        "category": "内核",
+        "lines": 2,
+        "nonblank": 2,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "沿用应用层契约入口，实际协议定义在领域侧，避免领域工厂反向依赖应用层。"
+      },
+      {
+        "file": "src/application/contracts/ShapeView.ts",
+        "category": "内核",
+        "lines": 4,
+        "nonblank": 3,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "通过应用层契约传递独立只读图形描述，CLI 不接触可变领域对象。"
+      },
+      {
+        "file": "src/application/contracts/TreeDecorator.ts",
+        "category": "内核",
+        "lines": 16,
+        "nonblank": 14,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "定义树行后缀扩展；标签只读取描述，不修改图形或基础渲染结果。"
+      },
+      {
+        "file": "src/bootstrap/EditorBootstrap.ts",
+        "category": "装配处",
+        "lines": 75,
+        "nonblank": 70,
+        "functions": 6,
+        "decisions": 5,
+        "complexity": 11,
+        "responsibility": "集中装配默认编辑器，并在启动 REPL 前选择代码或配置方式激活可选插件。"
+      },
+      {
+        "file": "src/bootstrap/PluginConfig.ts",
+        "category": "装配处",
+        "lines": 42,
+        "nonblank": 37,
+        "functions": 5,
+        "decisions": 12,
+        "complexity": 17,
+        "responsibility": "整体读取并校验插件配置，确保坏配置不会先激活前半段插件。"
+      },
+      {
+        "file": "src/bootstrap/PluginLoader.ts",
+        "category": "装配处",
+        "lines": 111,
+        "nonblank": 103,
+        "functions": 6,
+        "decisions": 30,
+        "complexity": 36,
+        "responsibility": "在装配侧解析插件模块及包清单，代码和配置装配共用宿主激活与错误隔离。"
+      },
+      {
+        "file": "src/builtins/BuiltinCommands.ts",
+        "category": "插件",
+        "lines": 93,
+        "nonblank": 88,
+        "functions": 26,
+        "decisions": 1,
+        "complexity": 27,
+        "responsibility": "装配原有内置命令并提供清单，命令行为和帮助顺序保持不变。"
+      },
+      {
+        "file": "src/builtins/BuiltinShapeProvider.ts",
+        "category": "插件",
+        "lines": 175,
+        "nonblank": 163,
+        "functions": 11,
+        "decisions": 50,
+        "complexity": 61,
+        "responsibility": "按一种内置图形的声明解析参数和 SVG 属性，保留原有校验及默认值规则。"
+      },
+      {
+        "file": "src/builtins/BuiltinShapes.ts",
+        "category": "插件",
+        "lines": 71,
+        "nonblank": 68,
+        "functions": 9,
+        "decisions": 1,
+        "complexity": 10,
+        "responsibility": "把六种内置图形装配为独立提供者实例，内核工厂不再枚举类型。"
+      },
+      {
+        "file": "src/builtins/commands/AddToCommand.ts",
+        "category": "插件",
+        "lines": 27,
+        "nonblank": 24,
+        "functions": 3,
+        "decisions": 1,
+        "complexity": 4,
+        "responsibility": "将已有图形子树移入指定容器，作为最后一个子节点。"
+      },
+      {
+        "file": "src/builtins/commands/BackCommand.ts",
+        "category": "插件",
+        "lines": 22,
+        "nonblank": 19,
+        "functions": 3,
+        "decisions": 0,
+        "complexity": 3,
+        "responsibility": "将图形移到同级绘制顺序开头，使其位于最后层。"
+      },
+      {
+        "file": "src/builtins/commands/CanvasCommand.ts",
+        "category": "插件",
+        "lines": 42,
+        "nonblank": 37,
+        "functions": 2,
+        "decisions": 1,
+        "complexity": 3,
+        "responsibility": "查询当前画布，或在完整校验后修改画布尺寸。"
+      },
+      {
+        "file": "src/builtins/commands/CreateCommand.ts",
+        "category": "插件",
+        "lines": 85,
+        "nonblank": 77,
+        "functions": 7,
+        "decisions": 9,
+        "complexity": 16,
+        "responsibility": "创建图形并保存对象及原位置，供撤销移除和重做接回。"
+      },
+      {
+        "file": "src/builtins/commands/DeleteCommand.ts",
+        "category": "插件",
+        "lines": 62,
+        "nonblank": 55,
+        "functions": 6,
+        "decisions": 4,
+        "complexity": 10,
+        "responsibility": "删除一个图形子树，保留原对象、父容器和顺序以支持局部恢复。"
+      },
+      {
+        "file": "src/builtins/commands/FrontCommand.ts",
+        "category": "插件",
+        "lines": 22,
+        "nonblank": 19,
+        "functions": 3,
+        "decisions": 0,
+        "complexity": 3,
+        "responsibility": "将图形移到同级绘制顺序末尾，使其位于最前层。"
+      },
+      {
+        "file": "src/builtins/commands/GroupCommand.ts",
+        "category": "插件",
+        "lines": 60,
+        "nonblank": 53,
+        "functions": 7,
+        "decisions": 2,
+        "complexity": 9,
+        "responsibility": "通过工厂创建容器并收编已有图形，保存局部结构变化以撤销和重做。"
+      },
+      {
+        "file": "src/builtins/commands/HelpCommand.ts",
+        "category": "插件",
+        "lines": 22,
+        "nonblank": 19,
+        "functions": 2,
+        "decisions": 1,
+        "complexity": 3,
+        "responsibility": "读取已注册命令的帮助信息，新增命令无需维护固定帮助列表。"
+      },
+      {
+        "file": "src/builtins/commands/InitCommand.ts",
+        "category": "插件",
+        "lines": 30,
+        "nonblank": 26,
+        "functions": 2,
+        "decisions": 0,
+        "complexity": 2,
+        "responsibility": "校验 init 参数并建立默认或指定尺寸的新文档。"
+      },
+      {
+        "file": "src/builtins/commands/MoveCommand.ts",
+        "category": "插件",
+        "lines": 87,
+        "nonblank": 80,
+        "functions": 6,
+        "decisions": 9,
+        "complexity": 15,
+        "responsibility": "委派统一图形移动，保存前后局部几何以准确撤销和重做。"
+      },
+      {
+        "file": "src/builtins/commands/ReadCommand.ts",
+        "category": "插件",
+        "lines": 26,
+        "nonblank": 23,
+        "functions": 2,
+        "decisions": 0,
+        "complexity": 2,
+        "responsibility": "异步读入 SVG，返回成功摘要及缺 id 警告，历史与路径更新由会话决定。"
+      },
+      {
+        "file": "src/builtins/commands/RedoCommand.ts",
+        "category": "插件",
+        "lines": 21,
+        "nonblank": 18,
+        "functions": 2,
+        "decisions": 0,
+        "complexity": 2,
+        "responsibility": "校验 redo 参数并请求会话重做一个编辑单元。"
+      },
+      {
+        "file": "src/builtins/commands/SaveCommand.ts",
+        "category": "插件",
+        "lines": 27,
+        "nonblank": 24,
+        "functions": 2,
+        "decisions": 1,
+        "complexity": 3,
+        "responsibility": "保存当前文档到显式或关联路径，由会话在 IO 成功后更新历史。"
+      },
+      {
+        "file": "src/builtins/commands/ScaleCommand.ts",
+        "category": "插件",
+        "lines": 77,
+        "nonblank": 70,
+        "functions": 6,
+        "decisions": 5,
+        "complexity": 11,
+        "responsibility": "委派统一图形缩放，保存前后局部几何以准确撤销和重做。"
+      },
+      {
+        "file": "src/builtins/commands/SetCommand.ts",
+        "category": "插件",
+        "lines": 63,
+        "nonblank": 57,
+        "functions": 5,
+        "decisions": 4,
+        "complexity": 9,
+        "responsibility": "执行属性策略并将整批局部属性修改作为一个可撤销命令。"
+      },
+      {
+        "file": "src/builtins/commands/ShowCommand.ts",
+        "category": "插件",
+        "lines": 26,
+        "nonblank": 23,
+        "functions": 2,
+        "decisions": 1,
+        "complexity": 3,
+        "responsibility": "查询单个图形的属性与父容器，返回只读展示数据。"
+      },
+      {
+        "file": "src/builtins/commands/TreeCommand.ts",
+        "category": "插件",
+        "lines": 28,
+        "nonblank": 25,
+        "functions": 3,
+        "decisions": 1,
+        "complexity": 4,
+        "responsibility": "查询全文档或指定图形的子树，返回独立描述而不改变历史。"
+      },
+      {
+        "file": "src/builtins/commands/UndoCommand.ts",
+        "category": "插件",
+        "lines": 21,
+        "nonblank": 18,
+        "functions": 2,
+        "decisions": 0,
+        "complexity": 2,
+        "responsibility": "校验 undo 参数并请求会话撤销一个编辑单元。"
+      },
+      {
+        "file": "src/builtins/commands/UngroupCommand.ts",
+        "category": "插件",
+        "lines": 47,
+        "nonblank": 40,
+        "functions": 6,
+        "decisions": 1,
+        "complexity": 7,
+        "responsibility": "解散非根级容器并提升子节点，保留原组对象和顺序以支持局部恢复。"
+      },
+      {
+        "file": "src/cli/BaseTreeLineRenderer.ts",
+        "category": "内核",
+        "lines": 33,
+        "nonblank": 32,
+        "functions": 3,
+        "decisions": 10,
+        "complexity": 13,
+        "responsibility": "生成原有 SVG 根行和图形树行，不包含任何插件标签或类型分支。"
+      },
+      {
+        "file": "src/cli/CliApplication.ts",
+        "category": "内核",
+        "lines": 58,
+        "nonblank": 52,
+        "functions": 3,
+        "decisions": 7,
+        "complexity": 10,
+        "responsibility": "运行逐行 SVG 命令终端，等待执行结果并维持统一错误输出。"
+      },
+      {
+        "file": "src/cli/CliFormatter.ts",
+        "category": "内核",
+        "lines": 120,
+        "nonblank": 107,
+        "functions": 12,
+        "decisions": 31,
+        "complexity": 43,
+        "responsibility": "排版命令摘要、图形查询、属性变化与帮助内容，统一 CLI 的错误前缀。"
+      },
+      {
+        "file": "src/cli/CommandLineParser.ts",
+        "category": "内核",
+        "lines": 73,
+        "nonblank": 62,
+        "functions": 1,
+        "decisions": 18,
+        "complexity": 19,
+        "responsibility": "解析逐行 CLI 输入，保留双引号文本并正确区分注释与颜色。"
+      },
+      {
+        "file": "src/cli/DecoratedTreeLineRenderer.ts",
+        "category": "内核",
+        "lines": 46,
+        "nonblank": 43,
+        "functions": 3,
+        "decisions": 12,
+        "complexity": 15,
+        "responsibility": "包装同一树行接口并追加单行标签，隔离违规标签而保留内层输出。"
+      },
+      {
+        "file": "src/cli/ShapeText.ts",
+        "category": "内核",
+        "lines": 21,
+        "nonblank": 17,
+        "functions": 6,
+        "decisions": 4,
+        "complexity": 10,
+        "responsibility": "共用图形标签、属性和单行值格式，保持树与 show 的原有排版规则。"
+      },
+      {
+        "file": "src/cli/TreeLineRenderer.ts",
+        "category": "内核",
+        "lines": 6,
+        "nonblank": 5,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "统一基础树行和包装树行的渲染接口，缩进与连接线由调用者管理。"
+      },
+      {
+        "file": "src/domain/AttributeSnapshot.ts",
+        "category": "内核",
+        "lines": 22,
+        "nonblank": 19,
+        "functions": 2,
+        "decisions": 1,
+        "complexity": 3,
+        "responsibility": "保存一个属性的局部值及缺失状态，绑定原图形以支持准确恢复。"
+      },
+      {
+        "file": "src/domain/CanvasSize.ts",
+        "category": "内核",
+        "lines": 5,
+        "nonblank": 5,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "提供画布尺寸的只读描述，避免向外暴露文档内部状态。"
+      },
+      {
+        "file": "src/domain/CircleShape.ts",
+        "category": "内核",
+        "lines": 96,
+        "nonblank": 82,
+        "functions": 13,
+        "decisions": 5,
+        "complexity": 18,
+        "responsibility": "封装圆的圆心和半径，支持原子几何操作与局部恢复。"
+      },
+      {
+        "file": "src/domain/EllipseShape.ts",
+        "category": "内核",
+        "lines": 101,
+        "nonblank": 87,
+        "functions": 13,
+        "decisions": 7,
+        "complexity": 20,
+        "responsibility": "封装椭圆圆心与两轴半径，支持原子几何操作与局部恢复。"
+      },
+      {
+        "file": "src/domain/GeometrySnapshot.ts",
+        "category": "内核",
+        "lines": 40,
+        "nonblank": 35,
+        "functions": 4,
+        "decisions": 3,
+        "complexity": 7,
+        "responsibility": "保存图形及其子孙的局部几何值，并防止恢复到其他对象。"
+      },
+      {
+        "file": "src/domain/GroupShape.ts",
+        "category": "内核",
+        "lines": 135,
+        "nonblank": 120,
+        "functions": 16,
+        "decisions": 19,
+        "complexity": 35,
+        "responsibility": "封装有序容器，通过多态递归操作子图形并保证整组几何修改原子性。"
+      },
+      {
+        "file": "src/domain/GroupingChange.ts",
+        "category": "内核",
+        "lines": 39,
+        "nonblank": 34,
+        "functions": 5,
+        "decisions": 3,
+        "complexity": 8,
+        "responsibility": "保存分组或解组前后受影响的子列表，绑定原文档和组对象供局部恢复。"
+      },
+      {
+        "file": "src/domain/LineShape.ts",
+        "category": "内核",
+        "lines": 100,
+        "nonblank": 86,
+        "functions": 13,
+        "decisions": 5,
+        "complexity": 18,
+        "responsibility": "封装线段的两个端点，支持原子几何操作与局部恢复。"
+      },
+      {
+        "file": "src/domain/PlacementChange.ts",
+        "category": "内核",
+        "lines": 7,
+        "nonblank": 6,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "保存一次换父或同级换位的前后位置，不复制整份文档。"
+      },
+      {
+        "file": "src/domain/RectShape.ts",
+        "category": "内核",
+        "lines": 119,
+        "nonblank": 105,
+        "functions": 13,
+        "decisions": 7,
+        "complexity": 20,
+        "responsibility": "封装矩形几何，支持原子移动、缩放以及准确的局部恢复。"
+      },
+      {
+        "file": "src/domain/Shape.ts",
+        "category": "内核",
+        "lines": 198,
+        "nonblank": 178,
+        "functions": 18,
+        "decisions": 34,
+        "complexity": 52,
+        "responsibility": "封装图形身份与公共样式，定义统一几何、属性修改及局部恢复契约。"
+      },
+      {
+        "file": "src/domain/ShapeDescription.ts",
+        "category": "内核",
+        "lines": 15,
+        "nonblank": 15,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "提供图形的只读属性描述，供后续 CLI 展示与 SVG 输出使用。"
+      },
+      {
+        "file": "src/domain/ShapeFactory.ts",
+        "category": "内核",
+        "lines": 61,
+        "nonblank": 54,
+        "functions": 7,
+        "decisions": 17,
+        "complexity": 24,
+        "responsibility": "通过注入的提供者查询接口创建图形，不预置任何图形类型或参数分支。"
+      },
+      {
+        "file": "src/domain/ShapeProvider.ts",
+        "category": "内核",
+        "lines": 24,
+        "nonblank": 20,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "定义领域侧图形构造协议，工厂只依赖协议，不依赖应用层或内置类型。"
+      },
+      {
+        "file": "src/domain/ShapeStyles.ts",
+        "category": "内核",
+        "lines": 9,
+        "nonblank": 9,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "描述图形的可选初始样式，区分属性缺失与显式设置。"
+      },
+      {
+        "file": "src/domain/ShapeTree.ts",
+        "category": "内核",
+        "lines": 35,
+        "nonblank": 34,
+        "functions": 2,
+        "decisions": 6,
+        "complexity": 8,
+        "responsibility": "只读检查完整子树的身份、父子关系与容器规则，供离线构造和文档接入共用。"
+      },
+      {
+        "file": "src/domain/SiblingOrder.ts",
+        "category": "内核",
+        "lines": 8,
+        "nonblank": 7,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "描述一个受影响父容器的子节点顺序，根级节点以 undefined 表示父容器。"
+      },
+      {
+        "file": "src/domain/SubtreeLocation.ts",
+        "category": "内核",
+        "lines": 11,
+        "nonblank": 10,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "记录子树的文档、对象、父容器与位置，供删除或换位的局部恢复使用。"
+      },
+      {
+        "file": "src/domain/SvgDocument.ts",
+        "category": "内核",
+        "lines": 432,
+        "nonblank": 399,
+        "functions": 33,
+        "decisions": 105,
+        "complexity": 138,
+        "responsibility": "管理画布与有序图形树，受控维护唯一 id、父子关系及文档归属。"
+      },
+      {
+        "file": "src/domain/TextShape.ts",
+        "category": "内核",
+        "lines": 95,
+        "nonblank": 81,
+        "functions": 13,
+        "decisions": 6,
+        "complexity": 19,
+        "responsibility": "封装文字坐标与原始内容，几何操作保留文本并支持局部恢复。"
+      },
+      {
+        "file": "src/domain/internal/TreeMutationToken.ts",
+        "category": "内核",
+        "lines": 3,
+        "nonblank": 3,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "为树结构的内部写入口提供凭据，普通调用方通过 SvgDocument 操作。"
+      },
+      {
+        "file": "src/infrastructure/NodeDirectoryAdapter.ts",
+        "category": "内核",
+        "lines": 29,
+        "nonblank": 25,
+        "functions": 4,
+        "decisions": 4,
+        "complexity": 8,
+        "responsibility": "将 Node.js 当前目录和目录项查询适配为应用层目录访问接口。"
+      },
+      {
+        "file": "src/infrastructure/SvgFileStore.ts",
+        "category": "内核",
+        "lines": 59,
+        "nonblank": 55,
+        "functions": 4,
+        "decisions": 3,
+        "complexity": 7,
+        "responsibility": "实现 UTF-8 SVG 读写，构造独立文档并以临时文件保存，转换文件错误。"
+      },
+      {
+        "file": "src/infrastructure/SvgReader.ts",
+        "category": "内核",
+        "lines": 195,
+        "nonblank": 184,
+        "functions": 14,
+        "decisions": 60,
+        "complexity": 74,
+        "responsibility": "严格解析限定范围的 SVG，预留全部显式 id 后补全匿名元素并构造独立文档。"
+      },
+      {
+        "file": "src/infrastructure/SvgWriter.ts",
+        "category": "内核",
+        "lines": 72,
+        "nonblank": 67,
+        "functions": 7,
+        "decisions": 11,
+        "complexity": 18,
+        "responsibility": "将只读文档描述序列化为独立 SVG，保留顺序并转义 XML 属性与文本。"
+      },
+      {
+        "file": "src/main.ts",
+        "category": "装配处",
+        "lines": 16,
+        "nonblank": 13,
+        "functions": 3,
+        "decisions": 0,
+        "complexity": 3,
+        "responsibility": "把启动参数交给组合根，运行 CLI 并在退出时释放插件资源。"
+      },
+      {
+        "file": "src/plugin-api/index.ts",
+        "category": "内核",
+        "lines": 21,
+        "nonblank": 21,
+        "functions": 0,
+        "decisions": 0,
+        "complexity": 0,
+        "responsibility": "集中导出插件可依赖的契约和领域抽象，不暴露注册表内部或宿主装配。"
+      }
+    ]
+  },
+  "delta": {
+    "内核": {
+      "files": 7,
+      "lines": -83,
+      "nonblank": -64,
+      "functions": 12,
+      "decisions": 52,
+      "complexity": 64
+    },
+    "装配处": {
+      "files": 3,
+      "lines": 224,
+      "nonblank": 205,
+      "functions": 19,
+      "decisions": 47,
+      "complexity": 66
+    },
+    "插件": {
+      "files": 38,
+      "lines": 1533,
+      "nonblank": 1385,
+      "functions": 159,
+      "decisions": 166,
+      "complexity": 325
+    },
+    "VSCode": {
+      "files": 5,
+      "lines": 160,
+      "nonblank": 145,
+      "functions": 14,
+      "decisions": 22,
+      "complexity": 36
+    }
+  }
+}

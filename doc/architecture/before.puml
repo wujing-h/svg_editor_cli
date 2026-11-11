@@ -1,0 +1,20 @@
+' 用途：呈现 final 版本的模块依赖及两处固定分派。
+@startuml
+title Phase 1 / final
+skinparam componentStyle rectangle
+component "main.ts\n组合根" as Main
+component "cli\n解析、终端、格式化" as CLI
+component "application\n会话、历史、CommandDispatcher" as App
+component "application/commands\n内置命令实现" as Commands
+component "domain\nShape、GroupShape、SvgDocument\n固定 ShapeFactory" as Domain
+component "infrastructure\nSVG 文件读写" as IO
+Main --> CLI
+Main --> App
+Main --> IO
+CLI --> App
+App --> Commands : switch 构造
+Commands --> Domain
+App --> Domain
+IO --> Domain
+IO --> App : DocumentStore 契约
+@enduml

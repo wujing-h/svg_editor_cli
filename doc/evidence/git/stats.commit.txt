@@ -1,0 +1,3 @@
+commit 4296e7412796a562fd1d0b4cb8fb8aaae26df33b
+parents d51203e960d7a97f84344c0bce85c27bc962161b
+subject feat(plugin-stats): add depth-first shape statistics

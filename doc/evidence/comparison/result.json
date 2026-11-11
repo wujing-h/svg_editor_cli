@@ -1,0 +1,58 @@
+{
+  "head": "fc86fcbcd46f7f1ba5a2d4a37a6250c8ace8f077",
+  "final": "175883f24e0dadc42c339bb057d02366ca173c7d",
+  "node": "v24.14.0",
+  "results": [
+    {
+      "name": "cli-1",
+      "comparison": "code/config",
+      "bytes": 1162,
+      "equal": true
+    },
+    {
+      "name": "flowchart-box",
+      "comparison": "code/config",
+      "bytes": 769,
+      "equal": true
+    },
+    {
+      "name": "plugin-commands",
+      "comparison": "code/config",
+      "bytes": 3408,
+      "equal": true
+    },
+    {
+      "name": "cli-1",
+      "comparison": "final/disabled",
+      "bytes": 1150,
+      "equal": true
+    },
+    {
+      "name": "flowchart-basic",
+      "comparison": "final/disabled",
+      "bytes": 878,
+      "equal": true
+    }
+  ],
+  "disabledExtensions": true,
+  "fixedDirectoryUnchanged": true,
+  "finalCommit": "4ab75625fb349b62bd05021ff0265703417e4ccd",
+  "configurationIntroductionCommit": "dc2691fc8427f0e48de6296aa15d2b55093768cd",
+  "configurationIntroductionResults": [
+    {
+      "name": "cli-1",
+      "bytes": 1162,
+      "equal": true
+    },
+    {
+      "name": "flowchart-box",
+      "bytes": 769,
+      "equal": true
+    },
+    {
+      "name": "plugin-commands",
+      "bytes": 3408,
+      "equal": true
+    }
+  ]
+}

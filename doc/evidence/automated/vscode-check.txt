@@ -1,0 +1,8 @@
+$ cd extensions/vscode-svg
+$ npm run check
+
+> svg-course-tools@0.1.0 check
+> tsc --noEmit
+
+
+exit code: 0

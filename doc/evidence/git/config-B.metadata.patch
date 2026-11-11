@@ -1,0 +1,57 @@
+diff --git a/package.json b/package.json
+index a4098e8..b6ac801 100644
+--- a/package.json
++++ b/package.json
+@@ -13,10 +13,11 @@
+     "doc": "doc"
+   },
+   "scripts": {
+-    "check": "tsc --noEmit",
+-    "build": "tsc",
++    "build:plugins": "tsc -p tsconfig.plugin-api.json && npm --prefix plugins/plugin-stats run build && npm --prefix plugins/plugin-dir run build && npm --prefix plugins/plugin-shape-box run build && npm --prefix plugins/plugin-tree-star run build",
++    "check": "npm run build:plugins && tsc --noEmit",
++    "build": "npm run build:plugins && tsc --declaration false",
+     "cli": "npm run build && node dist/main.js",
+-    "test": "npm run build && node --test tests/*.test.cjs"
++    "test": "npm run build && node --test tests/*.test.cjs plugins/plugin-stats/tests/*.test.cjs plugins/plugin-dir/tests/*.test.cjs plugins/plugin-shape-box/tests/*.test.cjs plugins/plugin-tree-star/tests/*.test.cjs"
+   },
+   "keywords": [],
+   "author": "",
+diff --git a/plugins.config.json b/plugins.config.json
+index a5b818f..3d34dfc 100644
+--- a/plugins.config.json
++++ b/plugins.config.json
+@@ -1,3 +1,8 @@
+ {
+-  "plugins": []
++  "plugins": [
++    { "module": "./plugins/plugin-stats" },
++    { "module": "./plugins/plugin-dir" },
++    { "module": "./plugins/plugin-shape-box" },
++    { "module": "./plugins/plugin-tree-star" }
++  ]
+ }
+diff --git a/tsconfig.json b/tsconfig.json
+index 5f285f5..a43f104 100644
+--- a/tsconfig.json
++++ b/tsconfig.json
+@@ -4,6 +4,8 @@
+     "target": "ES2022",
+     "module": "NodeNext",
+     "moduleResolution": "NodeNext",
++    // 宿主编译插件声明时，将公开 API 指回同一源码身份；插件独立构建仍使用安装的包。
++    "paths": { "pj/plugin-api": ["./src/plugin-api/index.ts"] },
+     "rootDir": "src",
+     "outDir": "dist",
+     "declaration": true,
+diff --git a/tsconfig.plugin-api.json b/tsconfig.plugin-api.json
+new file mode 100644
+index 0000000..e755c84
+--- /dev/null
++++ b/tsconfig.plugin-api.json
+@@ -0,0 +1,5 @@
++// 用途：单独输出公开 API 及依赖的声明，CLI 后续仅输出 JS，避免跨包声明读写冲突。
++{
++  "extends": "./tsconfig.json",
++  "include": ["src/plugin-api/index.ts"]
++}

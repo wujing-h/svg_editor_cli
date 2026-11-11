@@ -1,0 +1,163 @@
+{
+  "head": "fc86fcbcd46f7f1ba5a2d4a37a6250c8ace8f077",
+  "modeA": [
+    {
+      "mode": "A",
+      "name": "stats",
+      "commit": "4296e7412796a562fd1d0b4cb8fb8aaae26df33b",
+      "parent": "d51203e960d7a97f84344c0bce85c27bc962161b",
+      "newPackages": [
+        {
+          "directory": "plugins/plugin-stats",
+          "files": 8,
+          "newlyAdded": true
+        }
+      ],
+      "changedSourceFiles": [
+        "src/bootstrap/EditorBootstrap.ts"
+      ],
+      "protectedDiffEmpty": true,
+      "unchangedTrees": [
+        {
+          "directory": "src/application",
+          "tree": "743eb331a1e31984a7b5b20646bd3ab273106799"
+        },
+        {
+          "directory": "src/domain",
+          "tree": "a935a57be3422f88a04dae65784bac40041f3d66"
+        },
+        {
+          "directory": "src/cli",
+          "tree": "b3868fcc9a2f872685fc32b2a5b3aa92039f1dfa"
+        },
+        {
+          "directory": "src/infrastructure",
+          "tree": "97977ea84de8631fe7eb9467d897ed33f3772faf"
+        },
+        {
+          "directory": "src/builtins",
+          "tree": "188ff1b212d8d507021be0bba6a1fc27e006c190"
+        },
+        {
+          "directory": "src/plugin-api",
+          "tree": "c90629447f536e9b193850794630765760819159"
+        }
+      ],
+      "existingPluginsUnchanged": [],
+      "loaderBlob": "3c313c108fa7bb0eae7536a51b586dbaaf520f99"
+    },
+    {
+      "mode": "A",
+      "name": "dir",
+      "commit": "8c393e4985284c84bfbad57f4061bd4d8648fe08",
+      "parent": "4296e7412796a562fd1d0b4cb8fb8aaae26df33b",
+      "newPackages": [
+        {
+          "directory": "plugins/plugin-dir",
+          "files": 8,
+          "newlyAdded": true
+        }
+      ],
+      "changedSourceFiles": [
+        "src/bootstrap/EditorBootstrap.ts"
+      ],
+      "protectedDiffEmpty": true,
+      "unchangedTrees": [
+        {
+          "directory": "src/application",
+          "tree": "743eb331a1e31984a7b5b20646bd3ab273106799"
+        },
+        {
+          "directory": "src/domain",
+          "tree": "a935a57be3422f88a04dae65784bac40041f3d66"
+        },
+        {
+          "directory": "src/cli",
+          "tree": "b3868fcc9a2f872685fc32b2a5b3aa92039f1dfa"
+        },
+        {
+          "directory": "src/infrastructure",
+          "tree": "97977ea84de8631fe7eb9467d897ed33f3772faf"
+        },
+        {
+          "directory": "src/builtins",
+          "tree": "188ff1b212d8d507021be0bba6a1fc27e006c190"
+        },
+        {
+          "directory": "src/plugin-api",
+          "tree": "c90629447f536e9b193850794630765760819159"
+        }
+      ],
+      "existingPluginsUnchanged": [
+        "plugins/plugin-stats"
+      ],
+      "loaderBlob": "3c313c108fa7bb0eae7536a51b586dbaaf520f99"
+    },
+    {
+      "mode": "A",
+      "name": "box-star",
+      "commit": "426d38ec348d8c7d64a30a352d7333b72505e691",
+      "parent": "8c393e4985284c84bfbad57f4061bd4d8648fe08",
+      "newPackages": [
+        {
+          "directory": "plugins/plugin-shape-box",
+          "files": 11,
+          "newlyAdded": true
+        },
+        {
+          "directory": "plugins/plugin-tree-star",
+          "files": 9,
+          "newlyAdded": true
+        }
+      ],
+      "changedSourceFiles": [
+        "src/bootstrap/EditorBootstrap.ts"
+      ],
+      "protectedDiffEmpty": true,
+      "unchangedTrees": [
+        {
+          "directory": "src/application",
+          "tree": "743eb331a1e31984a7b5b20646bd3ab273106799"
+        },
+        {
+          "directory": "src/domain",
+          "tree": "a935a57be3422f88a04dae65784bac40041f3d66"
+        },
+        {
+          "directory": "src/cli",
+          "tree": "b3868fcc9a2f872685fc32b2a5b3aa92039f1dfa"
+        },
+        {
+          "directory": "src/infrastructure",
+          "tree": "97977ea84de8631fe7eb9467d897ed33f3772faf"
+        },
+        {
+          "directory": "src/builtins",
+          "tree": "188ff1b212d8d507021be0bba6a1fc27e006c190"
+        },
+        {
+          "directory": "src/plugin-api",
+          "tree": "c90629447f536e9b193850794630765760819159"
+        }
+      ],
+      "existingPluginsUnchanged": [
+        "plugins/plugin-dir",
+        "plugins/plugin-stats"
+      ],
+      "loaderBlob": "3c313c108fa7bb0eae7536a51b586dbaaf520f99"
+    }
+  ],
+  "modeB": {
+    "commit": "dc2691fc8427f0e48de6296aa15d2b55093768cd",
+    "parent": "d51203e960d7a97f84344c0bce85c27bc962161b",
+    "newPackages": {
+      "plugin-stats": 8,
+      "plugin-dir": 8,
+      "plugin-shape-box": 11,
+      "plugin-tree-star": 9
+    },
+    "sourceUnchanged": true,
+    "packagesIdenticalToA": true,
+    "remoteTrackingRef": "dc2691fc8427f0e48de6296aa15d2b55093768cd"
+  }
+}

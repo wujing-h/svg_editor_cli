@@ -1,0 +1,13 @@
+M	package.json
+A	plugins/plugin-stats/README.md
+A	plugins/plugin-stats/package-lock.json
+A	plugins/plugin-stats/package.json
+A	plugins/plugin-stats/src/StatsCommand.ts
+A	plugins/plugin-stats/src/StatsPlugin.ts
+A	plugins/plugin-stats/src/index.ts
+A	plugins/plugin-stats/tests/Stats.test.cjs
+A	plugins/plugin-stats/tsconfig.json
+M	src/bootstrap/EditorBootstrap.ts
+M	tests/PluginBootstrap.test.cjs
+A	tests/StatsPlugin.test.cjs
+A	tsconfig.plugin-api.json

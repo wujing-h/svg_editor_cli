@@ -1,0 +1,5 @@
+Command: AST sanity fixture and repeated final/HEAD generation
+TypeScript 7.0.2
+Known fixture: 2 implemented functions, 6 decisions, CCN 8, 4 physical lines; comments and interface signatures excluded: PASS
+Repeated metrics.json byte equality: PASS
+exit code: 0

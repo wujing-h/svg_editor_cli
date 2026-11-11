@@ -1,0 +1,18 @@
+help
+dir
+init 800 600
+stats
+create g scene
+create box n1 120 100 160 60 "开始" in scene
+create circle c 300 100 20 in scene
+stats
+tree
+save ../artifacts/plugin-review.svg
+tree
+set n1 label "新标题"
+stats
+dir
+undo
+tree
+redo
+tree

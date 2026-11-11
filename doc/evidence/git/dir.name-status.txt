@@ -1,0 +1,12 @@
+M	package.json
+A	plugins/plugin-dir/README.md
+A	plugins/plugin-dir/package-lock.json
+A	plugins/plugin-dir/package.json
+A	plugins/plugin-dir/src/DirCommand.ts
+A	plugins/plugin-dir/src/DirPlugin.ts
+A	plugins/plugin-dir/src/index.ts
+A	plugins/plugin-dir/tests/Dir.test.cjs
+A	plugins/plugin-dir/tsconfig.json
+M	src/bootstrap/EditorBootstrap.ts
+A	tests/DirPlugin.test.cjs
+M	tests/StatsPlugin.test.cjs

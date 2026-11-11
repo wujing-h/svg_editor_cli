@@ -1,0 +1,78 @@
+# Stage 1
+help
+dir
+init 800 600
+create g scene
+create rect r 10 20 100 50 red in scene
+create circle c 200 100 20 in scene
+create ellipse e 300 100 30 15 in scene
+create line l 10 200 200 200 black in scene
+create text t 20 40 "hello" in scene
+tree
+show r
+stats
+move scene 0 10
+show r
+undo
+show r
+scale scene 2
+undo
+set t text "updated"
+undo
+
+# Stage 2
+group pair r c
+tree
+ungroup pair
+undo
+redo
+create g other
+addto other r
+show r
+undo
+front r
+back r
+delete c
+undo
+tree
+
+# Stage 3
+init 800 600
+create g flowchart
+create box n1 120 100 160 60 "开始" in flowchart
+create box n2 520 100 160 60 "处理数据" in flowchart
+create line arrow1 280 130 520 130 black in flowchart
+tree
+stats
+save ai-notes/phase2/demo-output/phase2-review.svg
+tree
+set n2 fill #f5a623
+tree
+undo
+tree
+redo
+save
+set n2 label "处理数据 v2"
+tree
+undo
+tree
+redo
+save
+move n2 0 100
+undo
+tree
+read ai-notes/phase2/demo-output/phase2-review.svg
+show n2-label
+
+# Stage 4
+move n2 0 10
+undo
+delete n1-rect
+ungroup n1
+scale n1 0
+read ai-notes/phase2/demo-output/missing-demo.svg
+redo
+show n2-rect
+stats
+read ai-notes/phase2/demo-output/phase2-review.svg
+undo

@@ -1,0 +1,65 @@
+svg-editor 0.1 - type 'help' for commands
+init [w] [h]                                       create a canvas (default 800x600)
+canvas [w] [h]                                     show or resize the current canvas
+save [file.svg]                                    save to a given or previously associated path
+read <file.svg>                                    load SVG and assign IDs to unnamed shapes
+create <type> <id> [params...] [in <containerId>]  create rect/circle/ellipse/line/text/g
+move <id> <dx> <dy>                                move a shape or all descendants of a group
+scale <id> <factor>                                scale all geometry by a positive factor
+delete <id>                                        delete a shape and all its descendants
+set <id> <attr> <value>                            set a supported geometry, style, or text property
+addto <gid> <id>                                   move a shape into a container as its last child
+front <id>                                         bring a shape to the front among its siblings
+back <id>                                          send a shape to the back among its siblings
+group <newGid> <id1> [id2...]                      group existing shapes in their original tree order
+ungroup <gid>                                      replace a non-top-level group with its children
+tree [id]                                          show the document tree or a selected subtree
+show <id>                                          show a shape's attributes and parent
+undo                                               undo the last edit
+redo                                               redo the last undone edit
+help                                               show available commands
+stats                                              count leaf shapes by type and containers in depth-first order
+dir                                                list direct entries in the current working directory
+[DIR]  docs
+[FILE]  .hidden
+[FILE]  other.svg
+[FILE]  sample.txt
+canvas 800x600 created
+(total 0, containers 0)
+g#scene created
+box#n1 created in g#scene
+circle#c created in g#scene
+rect: 1  text: 1  circle: 1  (total 3, containers 2)
+svg (800x600) *
+└── g#scene *
+    ├── g#n1 (box) *
+    │   ├── rect#n1-rect   x=120 y=100 w=160 h=60 fill=#4a90d9 *
+    │   └── text#n1-label  (140,135) "开始" *
+    └── circle#c  cx=300 cy=100 r=20 *
+saved to ../artifacts/plugin-review.svg (5 elements)
+svg (800x600)
+└── g#scene
+    ├── g#n1 (box)
+    │   ├── rect#n1-rect   x=120 y=100 w=160 h=60 fill=#4a90d9
+    │   └── text#n1-label  (140,135) "开始"
+    └── circle#c  cx=300 cy=100 r=20
+box#n1 updated: label="新标题"
+rect: 1  text: 1  circle: 1  (total 3, containers 2)
+[DIR]  docs
+[FILE]  .hidden
+[FILE]  other.svg
+[FILE]  sample.txt
+box#n1 update undone: label
+svg (800x600)
+└── g#scene
+    ├── g#n1 (box)
+    │   ├── rect#n1-rect   x=120 y=100 w=160 h=60 fill=#4a90d9
+    │   └── text#n1-label  (140,135) "开始"
+    └── circle#c  cx=300 cy=100 r=20
+box#n1 updated: label="新标题"
+svg (800x600) *
+└── g#scene *
+    ├── g#n1 (box) *
+    │   ├── rect#n1-rect   x=120 y=100 w=160 h=60 fill=#4a90d9
+    │   └── text#n1-label  (140,135) "新标题" *
+    └── circle#c  cx=300 cy=100 r=20

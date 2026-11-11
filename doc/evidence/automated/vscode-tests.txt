@@ -1,0 +1,39 @@
+$ cd extensions/vscode-svg
+$ npm test
+
+> svg-course-tools@0.1.0 test
+> npm run build && node --test tests/*.test.cjs
+
+
+> svg-course-tools@0.1.0 build
+> tsc
+
+✔ SVG files receive display metadata without modifying their URI (2.2368ms)
+✔ uppercase SVG suffixes and Unicode names are supported (0.3703ms)
+✔ non-SVG paths are ignored before querying the file system (0.3521ms)
+✔ a directory named with an SVG suffix receives no decoration (0.3345ms)
+✔ a missing or unreadable SVG does not reject the decoration request (0.536ms)
+✔ an already cancelled request performs no file query (0.3276ms)
+✔ cancellation during a pending file query suppresses the decoration (0.3029ms)
+✔ outline includes the root, nested groups, leaves, and unnamed text in source order (9.1004ms)
+✔ missing IDs are left unnamed instead of being synthesized or written to the file (1.1883ms)
+✔ UTF-16 source ranges retain CRLF, Unicode, entities, and multiline attributes (0.3858ms)
+✔ self-closing and explicitly closed empty elements have exact independent ranges (0.366ms)
+✔ comments, processing instructions, CDATA, and quoted delimiters do not create false elements (0.5673ms)
+✔ prefixed namespaces and SVG elements outside the CLI whitelist remain visible (0.5104ms)
+✔ duplicate IDs are displayed as XML nodes without applying CLI model constraints (0.3088ms)
+✔ each parse reflects current edited text without changing previously returned nodes (0.3497ms)
+✔ incomplete and malformed XML clear the entire outline without throwing (1.2723ms)
+✔ a valid edit restores the outline after a failed parse (0.4412ms)
+✔ cancelled parses return no partial tree and the parser remains reusable (0.3795ms)
+✔ all child and selection ranges are contained by their parent element (0.9743ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 258.4184
+
+exit code: 0

@@ -1,0 +1,3 @@
+commit dc2691fc8427f0e48de6296aa15d2b55093768cd
+parents d51203e960d7a97f84344c0bce85c27bc962161b
+subject test(plugins): demonstrate configuration-only plugin integration

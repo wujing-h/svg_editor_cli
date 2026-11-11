@@ -1,0 +1,3 @@
+commit 426d38ec348d8c7d64a30a352d7333b72505e691
+parents 8c393e4985284c84bfbad57f4061bd4d8648fe08
+subject feat(plugins): add composite boxes and saved-content markers

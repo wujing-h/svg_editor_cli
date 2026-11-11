@@ -1,0 +1,35 @@
+' 用途：呈现 Phase 2 组合根、公开 API 与插件对框架的单向依赖。
+@startuml
+title Phase 2
+skinparam componentStyle rectangle
+component "main / bootstrap\n代码装配、配置加载" as Boot
+component "cli\nREPL、树行包装链" as CLI
+package "框架 / 内核" {
+  component "application\nPluginHost、注册表\n会话、事务、契约" as App
+  component "domain\nShape、文档树、Provider 协议" as Domain
+  component "plugin-api\n公开导出入口" as API
+}
+component "infrastructure\nSVG / NodeDirectoryAdapter" as IO
+component "builtins\n内置命令与六种提供者" as Builtins
+component "plugins/*\nstats、dir、box、star" as Plugins
+component "extensions/vscode-svg\n独立 VSCode 提供者" as VSCode
+Boot --> CLI
+Boot --> App
+Boot --> IO
+Boot --> Builtins
+Boot --> Plugins : 代码导入或配置解析
+CLI --> App
+App --> Domain
+API --> App
+API --> Domain
+IO --> App : 应用契约
+IO --> Domain
+Builtins --> App
+Builtins --> Domain
+Plugins --> API : 仅使用公开抽象
+note right of VSCode
+  独立构建与测试
+  注册给 VSCode 宿主
+  不依赖 CLI 内核
+end note
+@enduml
