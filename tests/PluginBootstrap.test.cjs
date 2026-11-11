@@ -107,13 +107,16 @@ test("real CLI loads before its first input, reports plugin errors and continues
   assert.match(result.stdout, /rect#r  parent=svg/);
 });
 
-test("empty configuration and no configuration retain identical builtin editing output", async (t) => {
+test("empty configuration keeps the builtin tree undecorated while the default star decorates changed content", async (t) => {
   const fixture = await pluginFixture(t);
   const config = await fixture.config([]);
   const input = 'init 400 300\ncreate g scene\ncreate rect r 1 2 3 4 red in scene\nmove scene 10 20\nundo\nredo\nset r fill blue\nundo\ntree\nshow r\n';
   const defaults = launch(fixture.root, [], input);
   const configured = launch(fixture.root, ["--config", config], input);
-  assert.equal(configured.stdout, defaults.stdout);
+  // 标签启用后的差异只能是行尾星号；空配置仍须提供原始内置树输出。
+  assert.equal(defaults.stdout.replace(/ \*$/gm, ""), configured.stdout);
+  assert.match(defaults.stdout, /^svg \(400x300\) \*$/m);
+  assert.match(configured.stdout, /^svg \(400x300\)$/m);
   assert.equal(defaults.stderr, "");
   assert.equal(configured.stderr, "");
 });

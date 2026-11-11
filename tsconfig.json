@@ -4,6 +4,8 @@
     "target": "ES2022",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
+    // 宿主编译插件声明时，将公开 API 指回同一源码身份；插件独立构建仍使用安装的包。
+    "paths": { "pj/plugin-api": ["./src/plugin-api/index.ts"] },
     "rootDir": "src",
     "outDir": "dist",
     "declaration": true,

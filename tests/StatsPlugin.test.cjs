@@ -76,8 +76,9 @@ test("successful and failed stats queries leave edit history and session events 
 
 test("the real package has byte-identical code/config output and explicit disabled configuration removes it", async (t) => {
   const fixture = await pluginFixture(t);
-  // 两种装配比较必须保持相同插件集合及顺序；默认装配现在也包含 dir。
-  const config = await fixture.config([{ module: packagePath }, { module: path.resolve(__dirname, "../plugins/plugin-dir") }]);
+  // 保持与默认代码装配相同的插件集合与顺序，包含两个树标签。
+  const config = await fixture.config(["plugin-stats", "plugin-dir", "plugin-shape-box", "plugin-tree-star"]
+    .map((name) => ({ module: path.resolve(__dirname, "../plugins", name) })));
   const disabled = await fixture.config([{ module: packagePath, enabled: false }], "disabled.json");
   const input = 'stats\nhelp\ninit\ncreate g scene\ncreate text t 1 2 "title" in scene\ncreate rect r 1 2 3 4 in scene\nstats\nmove r 10 20\nundo\nstats\nredo\ntree\nstats\n';
   const codeOutput = launch(fixture.root, [], input);

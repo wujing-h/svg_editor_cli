@@ -127,7 +127,8 @@ test("read/save association and IO history restrictions survive directory querie
 test("fixed-directory code/config sessions including real read/save have byte-identical output", async (t) => {
   const fixture = await fixtureDirectory(t);
   // 配置、源 SVG 和保存目标都放在 cwd 外，避免自身改变被比较的目录列表。
-  const config = await fixture.config([{ module: statsPath }, { module: packagePath }]);
+  const config = await fixture.config(["plugin-stats", "plugin-dir", "plugin-shape-box", "plugin-tree-star"]
+    .map((name) => ({ module: path.resolve(__dirname, "../plugins", name) })));
   const source = path.join(fixture.root, "source.svg");
   const saved = path.join(fixture.root, "saved.svg");
   await fs.writeFile(source, '<svg width="400" height="300"><rect id="r" width="1" height="2"/></svg>', "utf8");

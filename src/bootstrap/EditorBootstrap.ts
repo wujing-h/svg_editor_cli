@@ -19,6 +19,8 @@ import { createRequire } from "node:module";
 import type { PluginManifest } from "../application/contracts/PluginManifest.js";
 import stats from "../../plugins/plugin-stats";
 import dir from "../../plugins/plugin-dir";
+import box from "../../plugins/plugin-shape-box";
+import modifiedStar from "../../plugins/plugin-tree-star";
 
 export class EditorBootstrap {
   readonly session: EditorSession;
@@ -65,5 +67,9 @@ export class EditorBootstrap {
     this.loader.activate(manifest, stats);
     const dirManifest = createRequire(__filename)("../../plugins/plugin-dir/package.json") as PluginManifest;
     this.loader.activate(dirManifest, dir);
+    const boxManifest = createRequire(__filename)("../../plugins/plugin-shape-box/package.json") as PluginManifest;
+    this.loader.activate(boxManifest, box);
+    const starManifest = createRequire(__filename)("../../plugins/plugin-tree-star/package.json") as PluginManifest;
+    this.loader.activate(starManifest, modifiedStar);
   }
 }
