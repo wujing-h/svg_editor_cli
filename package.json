@@ -13,10 +13,11 @@
     "doc": "doc"
   },
   "scripts": {
-    "check": "tsc --noEmit",
-    "build": "tsc",
+    "build:plugins": "tsc -p tsconfig.plugin-api.json && npm --prefix plugins/plugin-stats run build && npm --prefix plugins/plugin-dir run build && npm --prefix plugins/plugin-shape-box run build && npm --prefix plugins/plugin-tree-star run build",
+    "check": "npm run build:plugins && tsc --noEmit",
+    "build": "npm run build:plugins && tsc --declaration false",
     "cli": "npm run build && node dist/main.js",
-    "test": "npm run build && node --test tests/*.test.cjs"
+    "test": "npm run build && node --test tests/*.test.cjs plugins/plugin-stats/tests/*.test.cjs plugins/plugin-dir/tests/*.test.cjs plugins/plugin-shape-box/tests/*.test.cjs plugins/plugin-tree-star/tests/*.test.cjs"
   },
   "keywords": [],
   "author": "",

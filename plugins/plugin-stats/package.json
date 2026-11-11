@@ -1,0 +1,30 @@
+{
+  "name": "@svg-course/plugin-stats",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "contributes": {
+    "commands": ["stats"]
+  },
+  "scripts": {
+    "check": "tsc --noEmit",
+    "build": "tsc",
+    "test": "npm run build && node --test tests/*.test.cjs"
+  },
+  "peerDependencies": {
+    "pj": "^1.0.0"
+  },
+  "devDependencies": {
+    "pj": "file:../..",
+    "typescript": "7.0.2"
+  }
+}

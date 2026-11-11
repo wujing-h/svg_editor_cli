@@ -1,0 +1,17 @@
+// 用途：独立编译 dir 插件，只通过已安装的公开 API 包依赖宿主契约。
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "rootDir": "src",
+    "outDir": "dist",
+    "declaration": true,
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitOverride": true,
+    "noEmitOnError": true
+  },
+  "include": ["src/**/*.ts"]
+}
