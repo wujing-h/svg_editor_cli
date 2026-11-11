@@ -1,6 +1,6 @@
-# 人工演示指令与核对方式
+# 手动测试指令与核对方式
 
-完整输入见 [manual-demo.txt](../transcript/manual-demo.txt)，由已执行的四段人工会话提取，只包含命令及分段注释，不混入提示符或输出。对应结果见 [manual-summary.md](manual-summary.md)，原始记录见 [manual-output.txt](manual-output.txt)。
+完整输入见 [manual-demo.txt](../transcript/manual-demo.txt)，按已执行的四段手动测试整理，仅包含命令及分段注释。对应结果见 [manual-summary.md](manual-summary.md)，原始记录见 [manual-output.txt](manual-output.txt)。
 
 ## 启动（项目根目录 CMD）
 
@@ -9,7 +9,7 @@ if not exist ai-notes\phase2\demo-output mkdir ai-notes\phase2\demo-output
 npm run cli -- --config plugins.config.json
 ```
 
-出现 svg> 后，按文件中的 Stage 1—4 顺序逐段粘贴命令。为与原始输出对应，保存及读取路径沿用当时的 ai-notes/phase2/demo-output；已归档证据仍放在 doc/evidence，不随复演覆盖。
+出现 svg> 后，按文件中的 Stage 1—4 顺序逐段粘贴命令。
 
 | 指令段 | 代表指令 | 核对结果 |
 | --- | --- | --- |
@@ -24,4 +24,4 @@ npm run cli -- --config plugins.config.json
 node dist/main.js --config plugins.config.json < doc\transcript\manual-demo.txt
 ```
 
-此人工演示中的 dir 列出项目根目录，内容随仓库文件变化，不对整段输出做字节比较；严格比较使用另一组固定目录[会话对照指令](comparison/README.md)。
+本项手动测试中的 dir 列出项目根目录，内容随仓库文件变化。逐字节比较采用固定目录和独立的[会话对照指令](comparison/README.md)。

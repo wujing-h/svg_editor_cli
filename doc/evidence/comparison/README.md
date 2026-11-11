@@ -10,10 +10,10 @@
 | [cli-1.txt](../../transcript/cli-1.txt) | Phase 1 基础会话兼容性 | [真实 final](logs/cli-1.final.stdout.txt) / [禁用插件版](logs/cli-1.disabled.stdout.txt) | 1150，两份一致 |
 | [flowchart-basic.txt](../../transcript/flowchart-basic.txt) | Phase 1 手工分组流程图兼容性 | [真实 final](logs/flowchart-basic.final.stdout.txt) / [禁用插件版](logs/flowchart-basic.disabled.stdout.txt) | 878，两份一致 |
 
-- [result.json](result.json) 记录实际哈希与比较结果；logs/ 内 `.code`、`.config`、`.git-B`、`.final`、`.disabled` 分别对应上述运行。B 的 stdout 来源于用户运行，AI 已复核字节相同；用户的 fc 及构建成功记录保留在 [manual-output.txt](../manual-output.txt)。
+- [result.json](result.json) 记录提交哈希与比较结果；logs/ 内 `.code`、`.config`、`.git-B`、`.final`、`.disabled` 分别对应上述运行。B 分支手动测试的 stdout 经自动字节比较验证一致；fc 及构建记录见 [manual-output.txt](../manual-output.txt)。
 - 主线 A 为 fc86fcb，正式 B 为 dc2691f。两种方式均按 stats、dir、box、star 顺序启用，无 options，每次进程从未初始化状态开始，使用相同输入、初始文件和 cwd。
 - fixed-cwd/ 含 docs、.hidden、other.svg、sample.txt；只列直接子项。运行前后文件内容不变，日志及 artifacts/ 位于其外。other.svg 直接来自 Phase 1 §6 示例。
-- final 是附注标签：result.json 的 final 字段是标签对象 175883f；finalCommit 是解引用源码提交 4ab7562。基线程序来自真实 `git archive final` 的源码构建，未用当前代码冒充旧版；临时源码快照和压缩包不放入交付材料。
+- final 是附注标签：result.json 的 final 字段是标签对象 175883f；finalCommit 是解引用源码提交 4ab7562。基线程序由 `git archive final` 导出的源码构建，测试输出单独归档；临时源码快照和压缩包不纳入交付材料。
 - [plugins-empty.json](plugins-empty.json) 禁用全部可选插件；额外的 disabled-extensions 输出确认 stats/dir 未知、box 未知且 tree 无新增标签。基础会话的两条错误及缺 id 警告是预期行为，参与比较。
 
 ## 复演前准备（CMD）

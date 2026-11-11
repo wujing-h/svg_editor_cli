@@ -1,6 +1,6 @@
-# 人工演示摘要
+# 手动测试摘要
 
-用户已确认全部结果符合演示预期，原始记录见 [manual-output.txt](manual-output.txt)。批量粘贴造成少量输入与输出粘连，保留原文；不能把这些回显当作纯命令输入。完整指令见 [manual-demo.txt](../transcript/manual-demo.txt)，启动及逐段核对方式见 [manual-commands.md](manual-commands.md)。
+四段手动测试结果均符合预期，原始记录见 [manual-output.txt](manual-output.txt)。批量输入产生的部分命令回显与输出粘连按原样归档。可执行指令见 [manual-demo.txt](../transcript/manual-demo.txt)，启动及逐段核对方式见 [manual-commands.md](manual-commands.md)。
 
 | 检查 | 实际结果 |
 | --- | --- |
@@ -22,6 +22,6 @@ error: cannot read file: ai-notes/phase2/demo-output/missing-demo.svg
 error: undo not allowed after io command
 ```
 
-人工演示在项目根目录运行 dir，只作功能展示；严格输出对照另用固定目录。日志中以 ai-notes 开头的路径是执行时的真实位置，归档时保持原始输出不变；对应保存产物复制为 [manual-review.svg](manual-review.svg)。
+手动测试在项目根目录运行 dir，验证目录查看功能；逐字节输出对照另用固定目录。日志中以 ai-notes 开头的路径为测试执行位置，原始输出保持不变；对应 SVG 产物归档为 [manual-review.svg](manual-review.svg)。
 
-记录末尾追加了 B 接入演示，三次 `fc /b` 都显示“找不到差异”，提交为 dc2691f；AI 也重新读取实际文件逐字节验证，结果见 [comparison/result.json](comparison/result.json)。
+记录末尾包含 B 接入测试，三次 `fc /b` 均显示“找不到差异”，对应提交为 dc2691f；自动字节比较得到相同结论，结果见 [comparison/result.json](comparison/result.json)。

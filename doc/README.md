@@ -4,9 +4,9 @@
 
 ## 1. 构建与运行
 
-仓库地址：[wujing-h/svg_editor_cli](https://github.com/wujing-h/svg_editor_cli)。完整实现与交付附件位于 **main** 分支；**demo/config-plugins** 分支用于证明仅通过配置接入四个新插件。Phase 1 基线标签为 **final**。
+仓库地址：[wujing-h/svg_editor_cli](https://github.com/wujing-h/svg_editor_cli)。完整实现与交付附件位于 **main** 分支；**demo/config-plugins** 分支用于证明仅通过配置接入四个新插件。
 
-助教可用以下 CMD 命令拉取主线：
+使用以下 CMD 命令获取主线代码：
 
 ```cmd
 git clone --branch main https://github.com/wujing-h/svg_editor_cli.git
@@ -130,7 +130,7 @@ extension.ts 的 activate 向 VSCode 注册 SvgFileDecorationProvider 和 SvgDoc
 
 CLI 的 SvgReader 会补 id、限制图形和属性、构造编辑模型，且没有源码区间，因此没有直接复用到大纲。VSCode 使用独立 sax 解析层，保留任意 XML 元素层级与 UTF-16 区间；从内存读取最新文本，无 id 节点仍显示标签，不完整 XML 返回空大纲。可复用的是遍历思路和 SVG 测试场景，CLI 领域对象不适合作为任意 XML 的展示模型。
 
-下图由用户实际运行提供，按用户要求直接采用。编辑更新、不完整 XML、取消及区间正确性另有自动测试；不将静态截图当作这些动态行为的证明。
+下图为 VSCode 扩展的手动测试运行截图。编辑更新、不完整 XML、取消请求及源码区间正确性由自动测试验证。
 
 ![VSCode 文件标记、大纲与源码定位](<pj1-phase2/vscode插件截图.png>)
 
@@ -138,8 +138,8 @@ CLI 的 SvgReader 会补 id、限制图形和属性、构造编辑模型，且�
 
 | 验收项 | 测试指令 / 输入 | 结果与证据 |
 | --- | --- | --- |
-| 自动检查 | `npm run check`、`npm test`；`npm --prefix extensions\vscode-svg run check`、`npm --prefix extensions\vscode-svg test` | CLI/四插件 301 项、VSCode 19 项通过，包含类型检查与构建；[原始日志](evidence/README.md) |
-| 人工功能演示 | 按[启动与核对步骤](evidence/manual-commands.md)，执行 [manual-demo.txt](transcript/manual-demo.txt) 中四段命令：基础编辑、结构操作、box/标签/读写、失败与历史 | 结果通过，5 条错误均为预期；[逐项摘要](evidence/manual-summary.md)、[用户原始输出](evidence/manual-output.txt) |
+| 自动测试 | `npm run check`、`npm test`；`npm --prefix extensions\vscode-svg run check`、`npm --prefix extensions\vscode-svg test` | CLI/四插件 301 项、VSCode 19 项通过，包含类型检查与构建；[原始日志](evidence/README.md) |
+| 手动测试 | 按[启动与核对步骤](evidence/manual-commands.md)，执行 [manual-demo.txt](transcript/manual-demo.txt) 中四段命令：基础编辑、结构操作、box/标签/读写、失败与历史 | 结果通过，5 条错误均为预期；[逐项摘要](evidence/manual-summary.md)、[原始输出](evidence/manual-output.txt) |
 | 双装配 | 将 [cli-1.txt](transcript/cli-1.txt)、[flowchart-box.txt](transcript/flowchart-box.txt)、[plugin-commands.txt](transcript/plugin-commands.txt) 分别输入代码/配置方式；[运行及 fc /b 指令](evidence/comparison/README.md) | 比较基础会话、box 流程图、stats/dir 查询。主线代码/配置及 B 演示配置三份输出逐字节一致；[输入—输出对应表](evidence/comparison/README.md)、[比较结果](evidence/comparison/result.json) |
 | Phase 1 兼容 | 用[空插件配置](evidence/comparison/plugins-empty.json)运行 [cli-1.txt](transcript/cli-1.txt) 和 [flowchart-basic.txt](transcript/flowchart-basic.txt)；[运行及 fc /b 指令](evidence/comparison/README.md) | 当前禁用插件版与真实 final 的基础编辑、手工流程图输出逐字节一致；对应 `.disabled` / `.final` 日志见[比较记录](evidence/comparison/README.md)。cwd 固定，日志在目录外 |
 | A 接入 stats | main 提交 `4296e74`，新增 plugin-stats，提供 `stats` 命令 | src 只改组合根，内核不变；[提交文件清单](evidence/git/stats.name-status.txt) |
@@ -148,6 +148,5 @@ CLI 的 SvgReader 会补 id、限制图形和属性、构造编辑模型，且�
 | B 配置接入四包 | demo/config-plugins 提交 `dc2691f`，从框架基线 d51203e 新增上述四个同源插件，通过 plugins.config.json 启用 | 已有 src 零变化，四包与 A 完全相同；[提交文件清单](evidence/git/config-B.name-status.txt)、[差异复核指令](evidence/git/README.md) |
 | 代码指标 | `node scripts/generate-metrics.cjs final HEAD`，交付打标后可将 HEAD 换为 p2 | Git 历史自动生成[行数与复杂度增量](../docs/metrics/summary.md)、[文件清单和职责](../docs/metrics/files.md)，VSCode 单列；[统计口径](../docs/metrics/README.md) |
 
-过程按“VSCode 实践 → 四扩展点与事务/事件 → 通用加载 → 独立业务插件 → 交付验证”推进。AI 提供架构与实现，用户逐步 review 后确认；采用局部恢复而非整文档撤销，依据用户反馈修正了大纲导航打开预览的问题，并用独立 B 提交补全配置接入证据。
+开发按“VSCode 实践 → 四扩展点与事务/事件 → 通用加载 → 独立业务插件 → 交付验证”推进，采用 AI 辅助设计与编码，通过分步代码审查、自动测试和手动测试确认实现。关键修订包括采用局部恢复实现撤销、修正大纲导航打开预览的问题，以及补充独立 B 提交验证配置接入。
 
-当前报告记录主线源码候选 fc86fcb；原 final 保持不动。正式交付以用户提交报告、推送并新增的 p2 为准，指标脚本可在打标后用 `final p2` 原样复算。
